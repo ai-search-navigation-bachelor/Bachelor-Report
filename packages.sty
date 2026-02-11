@@ -1,0 +1,206 @@
+% Forfatter – Jon Arnt Kårstad, NTNU IV-IMT
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{packages}[2021/04/20 Pakker]
+\usepackage[utf8]{inputenc} % Tegnkoding
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% -----------------------
+% Innhold:
+% Vedlegg
+% Referanser
+% Kode
+% Farger
+% Flytskjema
+% Frontmatter
+% Generelt
+% Bilder
+% Språk
+% Hoveddel
+% Matematikk
+% Sideoppsett
+% -----------------------
+
+% --- Vedlegg ---
+\usepackage{appendix}
+\newcommand{\addappendix}{
+    \newpage
+    \appendix
+    \section*{Vedlegg}
+    \addcontentsline{toc}{section}{Vedlegg}
+    \renewcommand{\thesubsection}{\Alph{subsection}}
+}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{float}
+
+% --- Referanser ---
+\usepackage[
+  backend=biber,
+  style=numeric-comp,
+  sorting=none,
+  urldate=long
+]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+
+\newcommand{\source}[1]{%
+  \vspace{-4pt}
+  \caption*{\hfill \footnotesize{Kilde: {#1}}}
+}
+
+% --- Kode ---
+\usepackage{minted}
+
+% --- Farger ---
+\usepackage[dvipsnames]{xcolor}
+
+% --- Flytskjema ---
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse, fill=red!20, node distance=3cm,
+    minimum height=2em]
+
+% --- Frontmatter ---
+\newcommand{\frontmatter}{
+    \pagenumbering{roman}
+}
+
+\definecolor{riskhigh}{RGB}{220,70,70}
+\definecolor{riskmedium}{RGB}{245,180,90}
+\definecolor{risklow}{RGB}{120,180,120}
+
+\usepackage{svg}
+
+\newcommand{\frontmatterpage}[2]{%
+  \clearpage
+  \thispagestyle{fancy}
+  \begin{center}
+    \vspace*{2.5cm}
+    {\LARGE\bfseries #1\par}
+    \vspace{1.8cm}
+    \begin{minipage}{0.62\textwidth}
+      #2
+    \end{minipage}
+  \end{center}
+}
+
+% --- Generelt ---
+\usepackage{import}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor = black,
+    filecolor = black,
+    linkcolor = black,
+    urlcolor = black
+}
+\usepackage{comment}
+\usepackage{pdfpages}
+
+% --- Bilder ---
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{url}
+\urlstyle{sf}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% --- Språk ---
+\usepackage{siunitx}
+\usepackage[norsk]{babel}
+
+\addto\extrasnorsk{
+    \renewcommand*\contentsname{Innholdsfortegnelse}
+    \renewcommand{\listfigurename}{Figurliste}
+    \renewcommand{\listtablename}{Tabelliste}
+    \def\equationautorefname{Likning}
+    \def\figureautorefname{Figur}
+    \def\tableautorefname{Tabell}
+    \def\sectionautorefname{Kapittel}
+    \def\subsectionautorefname{\sectionautorefname}
+    \def\subsubsectionautorefname{\sectionautorefname}
+}
+
+% --- Hoveddel ---
+\newcommand{\mainmatter}{
+    \newpage
+    \pagenumbering{arabic}
+}
+
+% --- Matematikk ---
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{textcomp}
+\usepackage{gensymb}
+
+% --- Sideoppsett ---
+\usepackage[a4paper, total={150mm, 245mm,footskip=14mm}]{geometry}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.8em}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.1ex}
+\renewcommand{\footrulewidth}{0.1ex}
+\fancyfoot[C]{\thepage}
+
+\newcommand{\pluseq}{\mathrel{+}=}
+
+\newcommand{\compactlists}{%
+  \setlength{\parskip}{0pt}%
+  \setlength{\itemsep}{0pt}%
+}
+
+\usepackage{tocloft}
+
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}}
+
+\setlength{\cftbeforesecskip}{2pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+\setlength{\cftbeforesubsubsecskip}{0pt}
+
+\cftsetpnumwidth{2.5em}
+\cftsetrmarg{3em}
+
+% --- Kodeoppsett ---
+\usepackage{listings}
+
+\renewcommand{\lstlistingname}{Kode}
+\renewcommand{\lstlistlistingname}{Kodeliste}
+
+\definecolor{reportblue}{rgb}{.15, .15, .6}
+\definecolor{reportred}{rgb}{.4, .05, .15}
+\definecolor{reportgreen}{rgb}{.2, .3, .2}
+
+\lstset{
+    frame=single,
+    basicstyle=\fontsize{9}{10}\ttfamily,
+    keywordstyle=\color{reportblue}\bfseries,
+    stringstyle=\color{reportred},
+    commentstyle=\color{reportgreen},
+    identifierstyle=\color{black},
+    numberstyle=\fontsize{7}{8}\selectfont
+}
+
+\usepackage{svg}

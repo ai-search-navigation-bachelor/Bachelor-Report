@@ -1,0 +1,98 @@
+% Author - Jon Arnt Kårstad, NTNU IMT
+\documentclass{article}
+
+% Importing document settings from our file "packages.sty"
+\usepackage{packages}
+
+\begin{document}
+
+% Title page
+\import{./}{title}
+
+% ---------------------------
+% Front matter (Roman numerals)
+% ---------------------------
+\frontmatter
+
+{\compactlists
+
+% Abstract
+\import{./Intro/}{Abstract}
+\clearpage
+
+\import{./Intro/}{Sammendrag}
+\clearpage
+
+% Preface / Acknowledgements (rename file content to match)
+\import{./Intro/}{Forord}
+\clearpage
+
+% Table of Contents (add to TOC explicitly)
+\phantomsection
+\addcontentsline{toc}{section}{Innholdsfortegnelse}
+\tableofcontents
+\clearpage
+
+% List of Figures
+\phantomsection
+\addcontentsline{toc}{section}{Figurer}
+\listoffigures
+\clearpage
+
+% List of Tables
+\phantomsection
+\addcontentsline{toc}{section}{Tabeller}
+\listoftables
+\clearpage
+
+% List of Code (List of Listings)
+\phantomsection
+\addcontentsline{toc}{section}{Kodelister}
+\lstlistoflistings
+\clearpage
+
+% Acronyms / Abbreviations
+\import{./Intro/}{Akronymer}
+\clearpage
+
+% Glossary / Word list
+\import{./Intro/}{Ordliste}
+\clearpage
+
+}
+% ---------------------------
+% Main matter (Arabic numerals)
+% ---------------------------
+\mainmatter
+
+\import{./Sections/}{1.Introduksjon}
+\import{./Sections/}{2.Kravspesifikasjon}
+\import{./Sections/}{3.Utviklingsprosess}
+\import{./Sections/}{4.Metode}
+\import{./Sections/}{5.Design}
+\import{./Sections/}{6.TeoriOgTeknologi}
+\import{./Sections/}{7.DagensLøsning}
+\import{./Sections/}{8.Søk}
+\import{./Sections/}{9.Navigasjon}
+\import{./Sections/}{10.TreningAvKI}
+\import{./Sections/}{11.VurderingAvLøsning}
+\import{./Sections/}{12.Diskusjon}
+\import{./Sections/}{13.Konklusjon}
+% Appendix should normally come after References
+% (see section 3 below)
+
+
+% ---------------------------
+% References (in TOC)
+% ---------------------------
+\clearpage
+\printbibliography[heading=bibintoc, title={Bibliografi}]
+\clearpage
+
+% ---------------------------
+% Appendix (after References)
+% ---------------------------
+\appendix
+\import{./Sections/}{Appendix}
+
+\end{document}
