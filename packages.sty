@@ -204,3 +204,46 @@
 }
 
 \usepackage{svg}
+
+% --- Vedlegg-start ---
+\newcommand{\startvedlegg}{%
+  \clearpage
+  \phantomsection
+  \appendix
+  \addcontentsline{toc}{section}{Vedlegg}
+  \renewcommand{\thesection}{\Alph{section}}
+  \setcounter{section}{0}
+}
+
+% --- Cover-side per vedlegg (venstrejustert) ---
+\newcommand{\vedleggcover}[2]{%
+  \clearpage
+  \thispagestyle{empty} % eller fancy hvis du vil ha sidetall
+  \vspace*{0.24\textheight}
+
+  % Juster denne for mer/mindre "inn fra venstre"
+  \hspace*{2.2cm}%
+  \begin{minipage}{0.85\textwidth}
+    {\Large\bfseries Vedlegg~#1\par}
+    \vspace{1.2em}
+    {\Huge\bfseries #2\par}
+  \end{minipage}
+
+  \clearpage
+}
+
+% --- Vedlegg som PDF med cover + TOC (uten ekstra section-side) ---
+\newcommand{\vedleggpdf}[3]{%
+  \refstepcounter{section}%
+  \phantomsection
+  % TOC-linje (gir f.eks. "A Prosjekt Avtale")
+  \addcontentsline{toc}{section}{\thesection\quad #1}%
+  \label{#2}%
+  % Cover-side
+  \vedleggcover{\thesection}{#1}%
+  % Selve PDF-en kommer på neste side
+  \includepdf[
+    pages=-,
+    pagecommand={\thispagestyle{empty}}
+  ]{#3}%
+}
