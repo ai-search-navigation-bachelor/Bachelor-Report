@@ -1,0 +1,43 @@
+# LaTeX build files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lot
+*.lof
+*.lol
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# latexmk
+*.latexmk
+
+# temporary files
+*.tmp
+*.temp
+
+# MiKTeX
+*.gz
+
+# output PDF (optional)
+# Hvis du vil at PDF ikke skal versjoneres:
+# *.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Mac
+*.DS_Store
+
+.vscode/*
+!.vscode/settings.json
+svg-inkscape
