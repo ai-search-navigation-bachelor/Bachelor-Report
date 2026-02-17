@@ -41,3 +41,11 @@ Thumbs.db
 .vscode/*
 !.vscode/settings.json
 svg-inkscape
+.claude
+
+
+# PDF output
+*.pdf
+
+# Latexmk errors
+*-SAVE-ERROR
