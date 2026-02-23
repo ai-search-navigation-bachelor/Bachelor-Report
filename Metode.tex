@@ -1,0 +1,146 @@
+\section{Metode}
+\label{sec:metode}
+
+Dette kapittelet beskriver hvordan studien er gjennomført, herunder innsamling og analyse av data, utviklings- og prototypemetodikk, samt hvordan den foreslåtte løsningen er evaluert. Prosjektets overordnede mål er å undersøke hvordan kunstig intelligens (AI) kan bidra til bedre søk og navigasjon på helsedirektoratet.no, gjennom kartlegging av dagens løsning, utvikling av et konsept/prototype, og evaluering av forbedringspotensialet. \cite{ProjectPlan}\footnote{Se også oppgaveteksten for bacheloroppgaven i vedlegg/innledning.}
+
+Studien er videre strukturert i to komplementære forbedringsspor: (i) forbedret \textbf{søk} gjennom en backend-komponent med AI-støttet informasjonsgjenfinning og rangering, og (ii) forbedret \textbf{navigasjon} gjennom en frontend/GUI som reduserer friksjon i informasjonsflyten (bl.a.\ færre klikk og tydeligere veivalg). Begge sporene er forankret i funn fra kartleggingsfasen, og evalueres samlet gjennom en sammenlikning mellom nåværende løsning og prototype.
+
+
+\subsection{Forskningsdesign og metodisk tilnærming}
+\label{sec:forskningsdesign}
+
+Studien er gjennomført som en anvendt, designorientert undersøkelse hvor empirisk kartlegging kombineres med teknisk utvikling og evaluering. Tilnærmingen kan beskrives som en \textit{mixed methods}-studie: vi benytter kvantitative og kvalitative datakilder for å forstå brukerbehov og utfordringer, og bruker dette som grunnlag for å designe og vurdere en forbedret løsning.
+
+Metoden er tredelt:
+\begin{enumerate}
+    \item \textbf{Kartlegging av dagens løsning} gjennom primærdata (spørreundersøkelse) og sekundærdata (tidligere brukerinnsikt fra Helsedirektoratet).
+    \item \textbf{Utvikling av prototype/konsept} som demonstrerer AI-assistert søk og navigasjon i en kontrollert, testorientert kontekst.
+    \item \textbf{Evaluering av foreslått løsning} med fokus på relevans/treffsikkerhet, brukervennlighet og tilpasningsevne, i tråd med oppgavens målsetning. \cite{ProjectPlan}
+\end{enumerate}
+
+I tråd med prosjektets rammer er løsningen utviklet som et \textit{proof of concept} og er ikke ment for produksjonssetting. Dette påvirker både valg av datakilder, modellstrategi og evalueringsdesign. \cite{ProjectPlan}
+
+\subsection{Kartlegging: datagrunnlag og datainnsamling}
+\label{sec:kartlegging}
+
+Formålet med kartleggingsfasen var å etablere et empirisk grunnlag for hvilke typer søk- og navigasjonsutfordringer brukere opplever på helsedirektoratet.no, og hvilke forbedringer som bør prioriteres i en AI-assistert løsning.
+
+\subsubsection{Primærdata: spørreundersøkelse}
+\label{sec:survey}
+
+Primærdata ble samlet inn gjennom en kvantitativ spørreundersøkelse utformet i Microsoft Forms\footnote{\url{https://forms.office.com}}. Skjemaet er vedlagt i \autoref{app:forms} og inneholder både lukkede og åpne spørsmål for å kombinere målbare vurderinger med fritekstbasert brukerinnsikt.
+
+Spørsmålene dekker blant annet:
+\begin{itemize}
+    \item respondentens rolle (f.eks.\ helsepersonell, offentlig forvaltning, privatperson),
+    \item bruksfrekvens og formål med besøk på helsedirektoratet.no,
+    \item vurdering av søk og navigasjon på en numerisk skala,
+    \item opplevde utfordringer og strategier når informasjon ikke finnes,
+    \item forslag til forbedringer.
+\end{itemize}
+
+Undersøkelsen er anonym, og det ble ikke samlet inn personidentifiserende opplysninger. Formålet med anonymisering var å redusere terskelen for deltakelse og ivareta personvern.
+
+\subsubsection{Rekruttering og utvalg}
+\label{sec:utvalg}
+
+Målsettingen var å nå et bredt spekter av brukere som representerer sentrale målgrupper for helsedirektoratet.no, slik som helsepersonell, kommunal/offentlig sektor og privatpersoner. Opprinnelig var planlagt distribusjon på \textit{Skyra.no}\footnote{\url{https://www.skyra.no/no}} via Helsedirektoratets egne flater, men dette lot seg ikke gjennomføre innenfor prosjektperioden. Som alternativ ble undersøkelsen distribuert via relevante interne kanaler, direkte henvendelser til utvalgte helseinstitusjoner, samt faglige og personlige nettverk.
+
+Denne rekrutteringsstrategien innebærer et \textit{ikke-sannsynlighetsutvalg} (convenience/snowball), noe som gir nyttig, kontekstnær innsikt, men begrenser generaliserbarheten (se \autoref{sec:validitet}).
+
+\subsubsection{Geografisk spredning}
+\label{sec:geografi}
+
+For å få indikasjoner på variasjon på tvers av regioner ble det i kartleggingen også lagt vekt på å oppnå en viss geografisk spredning. Selv om undersøkelsen var anonym, ble det registrert deltakelse fra flere fylker. Dette brukes i hovedsak som en indikasjon på at funn ikke er begrenset til én lokal kontekst, men det innebærer ikke representativitet i statistisk forstand.
+
+\subsubsection{Sekundærdata}
+\label{sec:sekundaerdata}
+
+I tillegg til primærdata har prosjektgruppen hatt tilgang til eksisterende brukerinnsikt og tidligere undersøkelser fra Helsedirektoratet. Disse fungerer som sekundærdata og brukes som et sammenligningsgrunnlag for å vurdere hvorvidt identifiserte utfordringer fremstår som vedvarende, samt for å triangulere funn fra vår egen kartlegging. Kombinasjonen av primær- og sekundærdata bidrar til høyere begrepsvaliditet ved at funn kan vurderes opp mot tidligere målinger og observasjoner.
+
+\subsection{Databehandling og analysemetoder}
+\label{sec:analyse}
+
+Analysen ble gjennomført i to spor, tilpasset datatypene i undersøkelsen.
+
+\subsubsection{Kvantitativ analyse}
+\label{sec:kvant}
+
+Lukkede spørsmål (skala- og flervalgsspørsmål) ble analysert deskriptivt ved hjelp av frekvenser, fordelinger og sentralmål (f.eks.\ gjennomsnitt/median der det er hensiktsmessig). Formålet var å identifisere mønstre i opplevd kvalitet på søk og navigasjon, samt avdekke hvilke typer utfordringer som forekommer hyppigst på tvers av respondentgrupper.
+
+\subsubsection{Kvalitativ analyse}
+\label{sec:kval}
+
+Åpne svar ble analysert tematiske ved å kode gjentakende mønstre i opplevde utfordringer, behov og forbedringsforslag. Kodene ble deretter gruppert til overordnede tema (for eksempel terminologi/ordvalg, filtrering, «hvor hører dokumentet hjemme», og behov for mer kontekstsensitiv guiding). Resultatene brukes primært som designgrunnlag for prototypen og som støtte i diskusjonen av funn.
+
+\subsubsection{Forbedret søk (backend): AI-støttet informasjonsgjenfinning}
+\label{sec:ai}
+
+Med utgangspunkt i kartleggingsfunn ble det utviklet en prototype som demonstrerer hvordan AI kan støtte bedre informasjonsgjenfinning og navigasjon. I tråd med prosjektets rammer er prototypen utviklet som en testversjon som emulerer utvalgt funksjonalitet og informasjonsstruktur fra helsedirektoratet.no, uten mål om direkte integrasjon i produksjonssystemer. \cite{ProjectPlan}
+
+\subsubsection{Forbedret navigasjon (frontend): GUI og informasjonsflyt}
+\label{sec:navigasjon}
+
+Navigasjonsforbedringene er utviklet for å redusere brukerens kognitive belastning og antall interaksjoner for å nå relevant innhold. Med utgangspunkt i kartleggingsfunn er GUI-et utformet for å (i) gjøre relasjoner mellom innhold tydeligere (f.eks.\ tema $\rightarrow$ underinnhold), (ii) støtte raskere orientering gjennom tydelig kategorisering og kontekst, og (iii) redusere antall klikk ved å tilby mer presise innganger og bedre «veivisere» til riktig innhold.
+
+\subsubsection{Designprinsipper og avgrensninger}
+\label{sec:prinsipper}
+
+Prototypen fokuserer på funksjonelle forbedringer i søk og navigasjon, fremfor visuell redesign. Et sentralt prinsipp er korrekthet og etterprøvbarhet: løsningen skal prioritere svar og treff som kan forankres i verifiserte kilder, og unngå frie, ukontrollerte generative svar. Videre skal systemet være konsistent, slik at like forespørsler gir sammenlignbare resultater. \cite{ProjectPlan}
+
+\subsubsection{AI-komponent og informasjonsgjenfinning}
+\label{sec:ai}
+
+Den AI-assisterte delen av prototypen er utformet for å støtte semantisk forståelse av brukerforespørsler og knytte disse til relevante dokumenter og undersider. I stedet for å trene store modeller fra bunnen av, benyttes eksisterende forhåndstrente modeller og eksperimenter i mindre skala, i tråd med prosjektets ressurs- og tidsmessige rammer. \cite{ProjectPlan}
+
+Den tekniske implementasjonen omfatter typisk:
+\begin{itemize}
+    \item \textit{preprosessering} og strukturering av dokumentinnhold og metadata (f.eks.\ tittel, type, tema, relasjoner),
+    \item \textit{indeksering} for effektivt søk,
+    \item \textit{rangering} av treff basert på relevanssignaler (semantikk og eventuelle supplerende signaler),
+    \item \textit{presentasjon} av treff med tydelige referanser til kilder og navigasjonskontekst.
+\end{itemize}
+
+\subsection{Evaluering av foreslått løsning}
+\label{sec:evaluering}
+
+Evalueringen er gjennomført for å vurdere om prototypen kan gi målbar eller opplevd forbedring i søk og navigasjon, i tråd med prosjektets effektmål (relevans, tidsbruk, opplevd brukervennlighet og mer konsistent organisering). \cite{ProjectPlan}
+
+\subsubsection{Evalueringskriterier}
+\label{sec:kriterier}
+
+Evalueringen tar utgangspunkt i følgende kriterier:
+\begin{itemize}
+    \item \textbf{Treffsikkerhet og relevans:} i hvilken grad resultatlisten treffer brukerens intensjon og informasjonsbehov.
+    \item \textbf{Brukervennlighet og navigasjonsstøtte:} i hvilken grad løsningen reduserer søkeinnsats og gjør det enklere å forstå hvor informasjonen hører hjemme.
+    \item \textbf{Tilpasningsevne:} i hvilken grad løsningen kan håndtere varierte forespørsler og ulike brukergrupper uten at kvaliteten faller betydelig.
+    \item \textbf{Transparens:} i hvilken grad brukeren får signaler om hvorfor treff foreslås (kildereferanser, kontekst og konsistente mønstre).
+    \item \textbf{Effektivitet:} indikert ved redusert tidsbruk og/eller færre klikk for å løse representative oppgaver.
+
+\end{itemize}
+
+\subsubsection{Evalueringsopplegg}
+\label{sec:opplegg}
+
+Der det har vært mulig er evalueringen basert på sammenligning mellom opplevd kvalitet ved dagens løsning og opplevd kvalitet ved prototypen, støttet av scenarioer og representative søkeoppgaver. Videre er kvalitative tilbakemeldinger brukt for å avdekke forbedringsområder som ikke nødvendigvis fanges opp av skala- og flervalgsspørsmål.
+
+Evalueringen er lagt opp som en baseline--prototype-sammenlikning: nåværende løsning (helsedirektoratet.no) brukes som referansepunkt, og prototypen vurderes opp mot samme type informasjonsbehov og oppgaver. Dette gir et grunnlag for å diskutere forbedring i både søk (relevans/treff) og navigasjon (effektivitet, færre klikk og bedre orientering).
+
+
+\subsection{Validitet, reliabilitet og begrensninger}
+\label{sec:validitet}
+
+Studien har flere forhold som påvirker tolkning og generaliserbarhet:
+
+\textbf{Utvalg og generaliserbarhet:} Rekruttering gjennom tilgjengelige kanaler gir verdifull innsikt, men innebærer selvseleksjon og mulig skjevhet i hvilke brukergrupper som deltar. Resultatene tolkes derfor som indikative heller enn representative.
+
+\textbf{Måleinstrument:} Spørreundersøkelsen gir bredde, men begrenser muligheten til å observere faktisk adferd i sanntid. Åpne spørsmål kompenserer delvis ved å gi kontekst og forklaringer, men svarene er fortsatt selvrapporterte.
+
+\textbf{Prototypestatus:} Løsningen er et proof-of-concept og kan avvike fra forventninger brukere har til helsedirektoratet.no i produksjonsmiljø. Resultater fra evalueringen må derfor forstås som en vurdering av potensial og retning, ikke endelig effekt i drift. \cite{ProjectPlan}
+
+\textbf{AI-komponentens begrensninger:} Bruk av forhåndstrente modeller og begrenset treningsgrunnlag kan påvirke kvalitet og gi bias (f.eks.\ favorisering av enkelte dokumenttyper eller terminologi). Dette håndteres ved å diskutere observasjoner eksplisitt i evaluerings- og etikkdelen. \cite{ProjectPlan}
+
+\subsection{Etiske hensyn}
+\label{sec:etikk}
+
+Etikk er særlig relevant gitt at løsningen omhandler helseinformasjon og offentlig forvaltning. Studien har ivaretatt personvern ved anonym datainnsamling, og prosjektet har lagt til grunn et prinsipp om at AI-støtte skal være forankret i verifiserbare kilder for å redusere risiko for feil eller misledende informasjon. Videre vektlegges transparens i presentasjon av resultater, slik at brukeren kan forstå og etterprøve treffene, og slik at potensielle skjevheter kan identifiseres og diskuteres.

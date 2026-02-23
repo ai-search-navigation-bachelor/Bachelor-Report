@@ -1,0 +1,165 @@
+\section{Bakgrunn og teori}
+
+\subsection{Bakgrunn}
+
+\subsection{Teori}
+
+\subsubsection{multilingual-e5}
+Base model for backend og trent opp med query generering 10 per dokument av groq... 
+
+\subsubsection{LTR -click boost}
+
+
+\subsubsection{Fuzzy matching}
+"Fuzzy matching identifies records that refer to the same entity even when formats, spellings, or fields don’t match exactly. This guide is for data practitioners, analysts, and engineers who need to clean, link, or deduplicate messy, inconsistent datasets. It walks you through how fuzzy matching works, which algorithms to use, and how to improve accuracy in real-world environments. " -https://dataladder.com/fuzzy-matching-101/
+
+
+
+\subsubsection{Semantic search}
+\section*{Relevante artikler om Semantic Search}
+
+\subsection*{1. Dense Passage Retrieval for Open-Domain Question Answering}
+
+\textbf{Forfattere:} Karpukhin et al. (2020) \\
+\textbf{Lenke:} \url{https://aclanthology.org/2020.emnlp-main.550/}
+
+\textbf{Beskrivelse:}  
+Denne artikkelen introduserer Dense Passage Retrieval (DPR), en metode som bruker nevrale embedding-modeller for å representere både spørringer og dokumenter i samme vektorrom. Den viser hvordan dense retrieval kan overgå tradisjonelle metoder som BM25 i semantisk matching. Relevant for å forstå grunnlaget for moderne semantic search.
+
+\subsection*{2. Passage Re-ranking with BERT}
+
+\textbf{Forfattere:} Nogueira \& Cho (2019) \\
+\textbf{Lenke:} \url{https://arxiv.org/abs/1901.04085}
+
+\textbf{Beskrivelse:}  
+Artikkelen viser hvordan BERT kan brukes til \textit{re-ranking} av søkeresultater etter en første BM25-henting. Den demonstrerer betydelig forbedring i relevans gjennom nevrale språkmodeller. Relevant for hybride søkesystemer hvor klassisk søk kombineres med semantisk forståelse.
+
+\subsection*{3. ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction}
+
+\textbf{Forfattere:} Khattab \& Zaharia (2020) \\
+\textbf{Lenke:} \url{https://doi.org/10.1145/3397271.3401075}
+
+\textbf{Beskrivelse:}  
+ColBERT introduserer en \textit{late interaction}-modell som kombinerer token-nivå matching med kontekstualiserte BERT-representasjoner. Den balanserer effektivitet og semantisk presisjon, og er svært relevant for moderne produksjonssystemer innen semantic search.
+
+\subsection*{4. SPLADE: Sparse Lexical and Expansion Model for First Stage Ranking}
+
+\textbf{Forfattere:} Formal et al. (2021) \\
+\textbf{Lenke:} \url{https://doi.org/10.1145/3404835.3463098}
+
+\textbf{Beskrivelse:}  
+SPLADE kombinerer nevrale språkmodeller med sparse representasjoner, og fungerer som en hybrid mellom BM25 og dense retrieval. Metoden viser hvordan man kan forbedre første-stegs ranking ved å kombinere leksikalsk og semantisk signal.
+
+\subsection*{5. Pyserini: A Python Toolkit for Reproducible Information Retrieval Research}
+
+\textbf{Forfattere:} Lin et al. (2021) \\
+\textbf{Lenke:} \url{https://doi.org/10.1145/3404835.3463238}
+
+\textbf{Beskrivelse:}  
+Denne artikkelen presenterer Pyserini, et rammeverk som kombinerer både sparse (BM25) og dense retrieval-metoder. Den gir en praktisk bro mellom klassisk og moderne IR, og er relevant for forståelse av hybride søkearkitekturer.
+
+\subsection*{SemEHR: A general-purpose semantic search system to surface semantic data from clinical notes}
+
+\textbf{Forfattere:} Honghan Wu et al. \\
+\textbf{Lenke:} \url{https://pubmed.ncbi.nlm.nih.gov/29361077/}
+
+\textbf{Beskrivelse:}  
+Denne artikkelen presenterer SemEHR, et åpent semantisk søke- og analyseverktøy for kliniske journaldata. Systemet bruker naturlig språkprosessering til å identifisere kontekstualiserte medisinske begreper og bygger opp semantiske representasjoner som kan søkes via ontologibaserte grensesnitt. Dette er relevant for semantisk søk i helsedata og elektroniske pasientjournaler. 
+
+\subsection*{SemanticFind: Locating What You Want in a Patient Record}
+
+\textbf{Forfattere:} (Original artikkel med UMLS-basert søk) \\
+\textbf{Lenke:} \url{https://pmc.ncbi.nlm.nih.gov/articles/PMC5543371/}
+
+\textbf{Beskrivelse:}  
+Artikkelen presenterer SemanticFind, en klinisk søkemetode som går utover tradisjonell tekst- og synonymmatching ved å bruke UMLS og distribusjonal semantikk for å finne relevant informasjon i pasientjournaler. Metoden søker på flere semantiske dimensjoner og organiserer resultatene for klinisk bruk.
+
+\subsection*{Clinical Information Retrieval: A Literature Review}
+
+\textbf{Forfattere:} Sonish Sivarajkumar et al. \\
+\textbf{Lenke:} \url{https://pmc.ncbi.nlm.nih.gov/articles/PMC11052968/}
+
+\textbf{Beskrivelse:}  
+Denne litteraturgjennomgangen gir en omfattende oversikt over klinisk informasjonsgjenfinning (Clinical IR), inkludert metoder, teknikker og verktøy brukt for å effektivt hente medisinsk informasjon. Artiklene som gjennomgås dekker også semantiske metoder, indeks- og forespørselsutvidelse, og gir et godt grunnlag for å forstå utfordringene og mulighetene innen helse-IR.
+
+
+\subsubsection{Elastic search - (Document ranking) PRF BM25 }
+“The Probabilistic Relevance Framework: BM25 and Beyond” refers to a line of research in Information Retrieval (IR) that formalizes how we rank documents by relevance using probability theory. It originates from the Probabilistic Relevance Framework (PRF) and culminates (classically) in the BM25 ranking function, which is still a strong baseline in systems like Elasticsearch and Apache Lucene."
+
+% Probability Ranking Principle / PRF (conceptual form)
+\begin{equation}
+\text{Rank documents } D \text{ by decreasing } P(R=1 \mid D, Q),
+\end{equation}
+
+% Often expressed via odds (rank-equivalent under monotonic transforms)
+\begin{equation}
+\frac{P(R=1 \mid D,Q)}{P(R=0 \mid D,Q)}.
+\end{equation}
+
+% BM25 scoring function
+\begin{equation}
+\operatorname{BM25}(D,Q)
+=
+\sum_{t \in Q}
+\operatorname{IDF}(t)\,
+\frac{f(t,D)\,(k_1+1)}
+{f(t,D) + k_1\left(1-b + b\frac{|D|}{\operatorname{avgdl}}\right)},
+\end{equation}
+
+% A common Robertson/Sparck Jones-style IDF
+\begin{equation}
+\operatorname{IDF}(t)
+=
+\log\left(\frac{N - n_t + 0.5}{n_t + 0.5}\right),
+\end{equation}
+
+\paragraph{Forklaring av formlene}
+
+Den første ligningen uttrykker \textit{Probability Ranking Principle} (PRP), som sier at dokumenter bør rangeres i synkende rekkefølge etter sannsynligheten for at de er relevante for en gitt spørring. Formelt betyr dette at dokumenter sorteres etter $P(R=1 \mid D, Q)$, altså sannsynligheten for relevans gitt dokumentet $D$ og spørringen $Q$. Siden rangering bevares under monotone transformasjoner, uttrykkes dette ofte ved hjelp av odds-forholdet 
+$\frac{P(R=1 \mid D,Q)}{P(R=0 \mid D,Q)}$. Dette danner det teoretiske grunnlaget for \textit{Probabilistic Relevance Framework} (PRF).
+
+Under forenklede antagelser, som binær relevans (relevant / ikke relevant) og termuavhengighet (\textit{term independence}), kan denne sannsynlighetsmodellen omformes til praktiske rangeringsfunksjoner. BM25 er en beregningsmessig effektiv tilnærming som er avledet fra disse prinsippene.
+
+BM25-formelen består av tre sentrale komponenter:
+
+\begin{itemize}
+    \item \textbf{Inverse Document Frequency (IDF):} 
+    $\operatorname{IDF}(t)$ gir høyere vekt til sjeldne termer og lavere vekt til vanlige termer. Her er $N$ totalt antall dokumenter i samlingen, mens $n_t$ er antall dokumenter som inneholder termen $t$. Denne komponenten sørger for at diskriminerende (informasjonsrike) termer får større betydning i rangeringen.
+
+    \item \textbf{Term Frequency Saturation:}
+    Uttrykket 
+    $\frac{f(t,D)(k_1+1)}{f(t,D) + k_1\left(1-b + b\frac{|D|}{\operatorname{avgdl}}\right)}$
+    modellerer avtakende effekt (\textit{diminishing returns}) av gjentatte forekomster av en term. Selv om høyere termfrekvens $f(t,D)$ øker relevansscoren, vokser ikke bidraget lineært. Parameteren $k_1$ styrer hvor raskt denne metningen (\textit{saturation}) inntreffer.
+
+    \item \textbf{Document Length Normalization:}
+    Faktoren 
+    $1-b + b\frac{|D|}{\operatorname{avgdl}}$
+    justerer for dokumentlengde. Lengre dokumenter inneholder naturlig flere termer og ville ellers blitt systematisk favorisert. Parameteren $b$ bestemmer hvor sterk denne lengdenormaliseringen skal være.
+\end{itemize}
+
+Samlet balanserer BM25 global termviktighet (IDF), lokal termfrekvens i dokumentet og normalisering for dokumentlengde. Til tross for fremveksten av nevrale (\textit{neural}) søkemodeller brukes BM25 fortsatt som en sterk baseline og fungerer ofte som første steg (\textit{first-stage retrieval}) i moderne hybride søkesystemer.
+\cite{robertson2009bm25}
+
+\subsubsection{ RECIPROCAL RANK FUSION? (backend)}
+
+Reciprocal Rank Fusion (RRF) er en enkel og effektiv metode for \textit{rank aggregation}, det vil si sammenslåing av flere rangeringslister til én samlet rangering. Metoden er \textit{unsupervised}, noe som innebærer at den ikke krever treningsdata, og den brukes ofte i hybride søkesystemer hvor flere uavhengige rankere (for eksempel BM25 og en vektorbasert modell) kombineres.
+
+I stedet for å benytte de opprinnelige scorene fra hvert system, som kan være på ulike skalaer, benytter RRF kun rangposisjonen til hvert dokument i hver rangeringsliste. For en mengde rangeringslister $R = \{r_1, r_2, \dots, r_m\}$ og et dokument $d$, defineres RRF-scoren som:
+
+\begin{equation}
+\operatorname{RRF}(d) = \sum_{r \in R} \frac{1}{k + r(d)}
+\end{equation}
+
+Her er $r(d)$ rangposisjonen til dokument $d$ i rangering $r$, og $k$ er en konstant (ofte satt til $k=60$) som demper bidraget fra svært høye rangposisjoner.
+
+Formelen innebærer at dokumenter som rangeres høyt i flere lister får høy samlet score, siden lave rangtall gir større bidrag til summen. Metoden er robust fordi den ikke avhenger av absolutte scoringsverdier, kun relativ rangering. Empiriske studier har vist at RRF ofte gir bedre resultater enn både individuelle rankere og mer komplekse fusjonsmetoder.
+
+RRF er derfor særlig egnet i hybride søkesystemer hvor man kombinerer leksikalsk søk (for eksempel BM25) med semantisk eller vektorbasert søk.
+
+\subsubsection{Designing Health Websites Based on Users’ Web-Based Information-Seeking Behaviors}
+
+Artikkelen \textit{Designing Health Websites Based on Users’ Web-Based Information-Seeking Behaviors} undersøker hvordan nettdesign og interaksjonsmønstre kan støtte brukere med ulike informasjons-søkeatferder på helserelaterte nettsteder. Studien tar utgangspunkt i at helseinformasjonssøk ofte er utfordrende for brukere, både på grunn av manglende helsekompetanse og vansker med å formulere søkespørringer. Forfatterne utviklet et nytt nettsted, \textit{Better Health Explorer (BHX)}, med design som spesielt støtter både \textit{focused} og \textit{exploratory search}. 
+
+I en observasjonsstudie sammenlignet de BHX med en eksisterende helseportal ved hjelp av både kvalitative og kvantitative metoder. De fant at et interaktivt grensesnitt som støtter dynamisk informasjonsutforskning kan forbedre brukernes opplevelse og engasjement, øke antallet undersøkende handlinger, og fremme læring. Studien identifiserer fire sentrale designhensyn for helseinformasjons-søkesider: \\(1) dynamisk informasjonsomfang, \\(2) støtte for \textit{serendipity}, \\(3) hensyn til tillit, og \\(4) interaktivitet, som alle kan bedre brukeropplevelsen ved søk og navigasjon på helseinformasjonsnettsteder.
+
+\cite{pang2016designing}
