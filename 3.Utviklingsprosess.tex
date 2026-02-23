@@ -2,11 +2,21 @@
 
 Prosjektplanen, presentert i vedlegg \autoref{app:prosjektplan}, beskriver hvordan gjennomføringen av prosjektet opprinnelig var planlagt. Dette kapittelet bygger videre på planen og gir en redegjørelse for hvordan prosjektet faktisk ble gjennomført i praksis. Selv om den overordnede metodikken ble fulgt, ble enkelte elementer justert underveis for å tilpasse arbeidsform, fremdrift og samarbeid med eksterne aktører.
 
+\subsection{Utviklingsmodell}
+Vi valgte en smidig utviklingsmetodikk i form av scrum, med scrumboard i github projects. Videre begrunnelse og mer detaljert prosess står mer om i prosjektplanen vedlegg \autoref{app:prosjektplan}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/ScrumBoard.png}
+    \caption{Overview of the GitHub Projects scrum board  used for task tracking and sprint planning. Bildet viser hvordan en ferdig iterert sprint kan se ut (her sprint 2)}
+    \label{fig:github-projects-board}
+\end{figure}
+
 \subsection{Møtestruktur og koordinering}
 
-\subsubsection*{Daglige statusmøter (Daily Scrum)}
+\subsubsection*{Daglige statusmøter}
 
-Daglige statusmøter ble gjennomført kl. 09:15 fra mandag til fredag, primært fysisk når det var mulig. Møtene hadde kort varighet og fulgte en fast struktur hvor hvert medlem redegjorde for:
+Daglige statusmøter ble gjennomført kl. 09:15 fra mandag til fredag, primært fysisk da det var mulig. Møtene hadde kort varighet og fulgte en fast struktur hvor hvert medlem redegjorde for:
 
 \begin{enumerate}
     \item Hva som var gjennomført siden forrige møte
@@ -16,13 +26,16 @@ Daglige statusmøter ble gjennomført kl. 09:15 fra mandag til fredag, primært 
 
 Denne strukturen bidro til kontinuerlig koordinering og transparens i arbeidsprosessen. Eventuelle tekniske eller organisatoriske utfordringer ble identifisert tidlig, noe som reduserte risiko for forsinkelser og bidro til stabil fremdrift gjennom sprintene.
 
+\subsubsection*{Sprint planlegging}
+Annen hver tirsdag ble det gjennomført et sprint planleggingsmøte. Dette etterfulgte....
+
 \subsubsection*{Veiledermøter}
 
 Det ble gjennomført ukentlige veiledermøter hver onsdag fra kl. 12:00 til 13:00. Disse møtene hadde en mer strukturert og refleksiv karakter enn de daglige statusmøtene. Fokus lå på fremdrift i prosjektet, kvaliteten på metodiske valg, samt diskusjon av forskningsmessige utfordringer.
 
 Veiledermøtene ble også brukt aktivt til å få tilbakemeldinger på rapportstruktur, argumentasjon og akademisk presisjon. Dette bidro til å sikre metodologisk konsistens og faglig forankring gjennom hele prosjektperioden, samtidig som det ga rom for kritisk refleksjon rundt både løsning og forskningsdesign.
 
-\subsubsection*{Sprintgjennomgang (Sprint Review)}
+\subsubsection*{Sprintgjennomgang}
 
 Ved slutten av hver sprint ble det gjennomført sprintgjennomgang annenhver mandag kl. 10:30 sammen med Product Owner. I disse møtene ble ferdigstilt funksjonalitet demonstrert og vurdert opp mot definerte sprintmål.
 
@@ -42,21 +55,36 @@ I tillegg til ordinære sprintgjennomganger ble det annenhver sprint arrangert e
 
 De utvidede demonstrasjonene bidro til tverrfaglige tilbakemeldinger og styrket interessentforankringen i prosjektet. Ved å eksponere løsningen for flere perspektiver ble både tekniske og faglige implikasjoner tydeligere, noe som igjen påvirket videre prioriteringer og utviklingsretning. Dette styrket prosjektets relevans og tilpasning til faktiske behov hos oppdragsgiver.
 
-\subsection{Utviklingsmodell? / Scrumming }
+
+\subsection{Gantt-diagram}
+
+\begin{figure}[H] 
+    \centering 
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=1.2\textwidth]{Images/Gantt_diagram.pdf} 
+    }
+    \caption{Gantt diagram} 
+    \label{fig:gantt-diagram} 
+\end{figure}
+
 
 
 \subsubsection{Gjennomføring av sprint}
 
-\subsubsection{Sammendrag av iterasjoner}
+\subsubsection{Sammendrag av sprinter}
 
-\subsection*{Iterasjon 1 (5. jan - 19. jan)}
+\subsection*{Sprint 1 (5. jan - 19. jan)}
+Starten av prosjektperioden gikk med på å lage prosjekt planen, sette opp github projects, lage gruppe kontrakt, sette opp backend, møte med helsedirektoratet og utforske deres oppsett og lage bruker undersøkelser. 
 
-\subsection*{Iterasjon 2 (20. jan - 2. feb)}
+\subsection*{Sprint 2 (20. jan - 2. feb)}
+Sprint to gikk ut på starte på både frotnend og backend. Det ble holdt flere møter med ansatte fra Helsedirektoratet for at gruppen skulle forstå hva som kreves for å gjøre oppgaven, der ble det konkludert med at HAPI (Helsedirektoratets API) skulle brukes til å hente innhold. Det ble satt opp en MySQL database og noe innhold ble hentet fra HAPI. Deretter ble satt opp API endpoints for søk og hetnting av innhold i backend og frontend ble koblet opp mot dette. Det ble også opprettet en brukerundersøkelse i Microsoft Forms for evaluering av Helsedirektoratets nåværende nettside. 
 
-\subsection*{Iterasjon 3 (3. feb - 16. feb)}
+Det ble også gjort finpussing på prosjektplanen, slik at den kunne leveres før fristen.
 
-\subsection*{Iterasjon 4 (17. feb - 2. mar)}
+\subsection*{Sprint 3 (3. feb - 16. feb)}
 
-\subsection*{Iterasjon 5 (3. mar - 16. mar)}
+\subsection*{Sprint 4 (17. feb - 2. mar)}
+
+\subsection*{Sprint 5 (3. mar - 16. mar)}
 
 \subsection{Erfaringer og refleksjon}

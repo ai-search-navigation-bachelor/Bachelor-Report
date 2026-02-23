@@ -85,7 +85,11 @@
 \definecolor{risklow}{RGB}{120,180,120}
 
 \usepackage{svg}
-
+\svgsetup{
+  inkscape=true,
+  inkscapeformat=pdf,
+  inkscapelatex=false
+}
 \newcommand{\frontmatterpage}[2]{%
   \clearpage
   \thispagestyle{fancy}
@@ -170,6 +174,8 @@
   \setlength{\itemsep}{0pt}%
 }
 
+\usepackage{enumitem}
+
 \usepackage{tocloft}
 
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
@@ -203,7 +209,6 @@
     numberstyle=\fontsize{7}{8}\selectfont
 }
 
-\usepackage{svg}
 
 % --- Vedlegg-start ---
 \newcommand{\startvedlegg}{%
