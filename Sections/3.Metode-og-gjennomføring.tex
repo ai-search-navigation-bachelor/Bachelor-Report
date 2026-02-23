@@ -94,8 +94,19 @@ Programkoden var dermed delt mellom to hovedrepositorier: ett for frontend og et
 
 Begge repositoriene fulgte samme branch-struktur. En main-branch representerte produksjonsversjonen av systemet, og kode som ble merget til denne branchen ble automatisk deployert til en VM ved hjelp av GitHub Actions. I tillegg ble det brukt en dev-branch som integrasjons- og testgren, hvor nye funksjoner ble samlet før eventuell deployering. Nye feature-branches ble opprettet fra dev-branchen. Det var også satt opp automatiserte tester som ble kjørt ved opprettelse av Pull Requests (PR) til dev-branchen. Denne strukturen ble valgt for å sikre kontrollert integrasjon av nye funksjoner, god sporbarhet i utviklingsprosessen og stabil deploying av systemet.
 
+
 \subsubsection{Arbeidsflyt for utvikling av kode}
-Teamet fulgte en strukturert arbeidsflyt ved utvikling av ny funksjonalitet. Nye oppgaver ble først hentet fra sprint-backloggen i GitHub-prosjektet, der en valgt issue ble flyttet til In Progress og tildelt utvikleren dersom dette ikke allerede var gjort.
+
+Teamet fulgte en strukturert arbeidsflyt ved utvikling av ny funksjonalitet, som er vist i Figur~\ref{fig:Github-Workflow}.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/Figures/GithubWorkflow}
+    \caption{Oversikt over GitHub-basert arbeidsflyt brukt i prosjektet}
+    \label{fig:Github-Workflow}
+\end{figure}
+
+ Nye oppgaver ble først hentet fra sprint-backloggen i GitHub-prosjektet, der en valgt issue ble flyttet til In Progress og tildelt utvikleren dersom dette ikke allerede var gjort.
 
 Deretter opprettet utvikleren en ny branch i riktig repositorium basert på den gjeldende versjonen av dev-branchen. Den planlagte funksjonaliteten ble så implementert i denne feature-branchen. Under utviklingsarbeidet ble det gjort løpende commits med korte, beskrivende meldinger. En del av koden ble utviklet med støtte fra KI-baserte kodeverktøy som Claude Code, ChatGPT eller GitHub Copilot.
 
@@ -172,6 +183,6 @@ Studien har flere forhold som påvirker tolkning og generaliserbarhet. Rekrutter
 \subsection{Etiske hensyn}
 \label{sec:etikk}
 
-Etiske hensyn er særlig relevante gitt at løsningen omhandler helseinformasjon og offentlig forvaltning. Studien har ivaretatt personvern ved anonym datainnsamling, og prosjektet legger til grunn et prinsipp om at AI-støtte skal være forankret i verifiserbare kilder for å redusere risiko for feil eller misledende informasjon. Videre vektlegges transparens i presentasjon av resultater, slik at brukeren kan forstå og etterprøve treffene, og slik at potensielle skjevheter kan identifiseres og diskuteres.
+Etiske hensyn er særlig relevante gitt at løsningen omhandler helseinformasjon og offentlig forvaltning. Studien har ivaretatt personvern ved anonym datainnsamling, og prosjektet legger til grunn et prinsipp om at KI-støtte skal være forankret i verifiserbare kilder for å redusere risiko for feil eller misledende informasjon. Videre vektlegges transparens i presentasjon av resultater, slik at brukeren kan forstå og etterprøve treffene, og slik at potensielle skjevheter kan identifiseres og diskuteres.
 %Vi har anonyme brukerundersøkelser
 
