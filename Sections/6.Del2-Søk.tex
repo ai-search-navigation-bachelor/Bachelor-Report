@@ -1,5 +1,182 @@
-\section{Del II - Forbedret søk}
-Hvordan helsedirektoratet.no fungerer i dag
+\section{Del II --- Forbedret søk}
+\label{sec:del2-soek}
 
-Søk er backend løsning og hvordan vi går fram der med  vår løsning
+Denne delen beskriver søkekomponenten i prototypen, som utgjør prosjektets
+backendløsning. Vi begynner med å gjennomgå hvordan søk fungerer i den
+eksisterende løsningen på helsedirektoratet.no og peker på konkrete
+begrensninger. Deretter presenterer vi arkitekturen for vår hybride søkemotor,
+som kombinerer nøkkelordssøk (BM25 med tittelboost), semantisk vektorsøk og
+Reciprocal Rank Fusion (RRF).
+
+\subsection{Søk på helsedirektoratet.no i dag}
+\label{sec:soek-i-dag}
+
+Helsedirektoratet.no kjører på Enonic XP, et åpen kildekode-CMS og
+webapplikasjonsrammeverk som ble tatt i bruk i 2019 \cite{enonicCase}.
+Enonic XP benytter Elasticsearch som underliggende lagrings- og søkemotor
+\cite{enonicArchitecture}. Elasticsearch bruker BM25 (Best Matching 25)
+som standard relevansskåringsalgoritme (se \autoref{sec:bm25}).
+Søk på helsedirektoratet.no er dermed i praksis et termbasert søk der
+resultater rangeres etter grad av ordoverlapp mellom spørringen og
+dokumentinnholdet, vektet ved termfrekvens og invers dokumentfrekvens.
+
+Innholdet er tilgjengelig gjennom HAPI (Helsedirektoratets API-tjeneste),
+et åpent REST-API som leverer faglig innhold i JSON-format
+\cite{helsedirektoratetAPI}. Vi benytter HAPI som kilde for å populere
+vår egen database med innholdsdokumenter.
+
+Termbasert BM25-søk fungerer godt for presise, leksikalsk veldefinerte
+spørringer. Utfordringene oppstår typisk i tre situasjoner:
+
+\begin{itemize}
+    \item \textbf{Semantiske gap:} Søk med synonymer eller parafraserte
+          begreper gir ikke nødvendigvis relevante treff. En bruker som spør
+          om «samtale om drikkevaner» kan ha behov for innhold om
+          «motiverende intervju», uten at en ren termbasert modell kobler disse.
+    \item \textbf{Terminologigap:} Fagpersoner og privatpersoner bruker ulike
+          ord om samme fenomen. BM25 håndterer ikke gapet mellom folkelig og
+          klinisk språkbruk.
+    \item \textbf{Lengdeskjevhet:} Innhold rangeres etter termoverlapp, ikke
+          konseptuell relevans. Et kortfattet, svært relevant dokument kan
+          tapes mot et lengre dokument med mange matchende termer.
+\end{itemize}
+
+Funn fra kartleggingsfasen (se \autoref{sec:kartlegging}) understøtter at
+brukere opplever utfordringer med å finne relevant innhold, særlig ved
+utforskende søk. Dette motiverer en tilnærming som supplerer BM25 med
+semantisk forståelse.
+
+\subsection{Søkearkitektur: hybrid søk}
+\label{sec:soek-arkitektur}
+
+Søkekomponenten er implementert som et Python-basert REST API bygget med
+FastAPI. Søkemotoren kombinerer tre komponenter i en pipeline:
+
+\begin{enumerate}
+    \item \textbf{BM25 med tittelboost} --- nøkkelordssøk med høyere vekt på
+          treff i tittelfeltet
+    \item \textbf{Semantisk vektorsøk} --- nevralt embedding-basert søk med
+          flerspråklig E5-modell
+    \item \textbf{Reciprocal Rank Fusion (RRF)} --- fusjonering av de to
+          rangeringslistene til én samlet rangering
+\end{enumerate}
+
+\subsubsection{Nøkkelordssøk: BM25 med tittelboost}
+\label{sec:bm25-impl}
+
+Vi implementerte BM25 fra bunnen uten eksisterende BM25-bibliotek. Algoritmen
+beregner relevansskåren for et dokument $D$ og en spørring $Q$ ved:
+
+\begin{equation}
+\operatorname{BM25}(D,Q)
+=
+\sum_{t \in Q}
+\operatorname{IDF}(t)\,
+\frac{f(t,D)\,(k_1+1)}
+{f(t,D) + k_1\!\left(1-b + b\dfrac{|D|}{\operatorname{avgdl}}\right)},
+\end{equation}
+
+der $f(t,D)$ er frekvensen til term $t$ i dokument $D$, $|D|$ er
+dokumentlengden, $\operatorname{avgdl}$ er gjennomsnittlig dokumentlengde, og
+$k_1 = 1{,}2$ og $b = 0{,}75$ er standardparametrene (se \autoref{sec:bm25}
+og \cite{robertson2009bm25} for full utledning).
+
+I tillegg til standardformelen benytter vi en \textit{tittelboost}: termer
+som matcher i tittelfeltet bidrar med en høyere vektfaktor enn treff i
+brødteksten. Dette er i tråd med etablert praksis i søkesystemer som bruker
+feltvekting (BM25F) \cite{robertson2009bm25}, og reflekterer at tittelen
+typisk er den mest komprimerte og presise beskrivelsen av dokumentets relevans.
+
+\subsubsection{Semantisk vektorsøk}
+\label{sec:semantisk-impl}
+
+For å fange semantisk mening utover eksakt ordmatch benytter vi
+\texttt{intfloat/multilingual-e5-base} \cite{wang2024multilingual}, en
+flerspråklig transformermodell trent på spørring--passasje-par. Modellen
+produserer 768-dimensjonale embeddings som representerer semantisk innhold i
+et felles vektorrom. Den flerspråklige arkitekturen håndterer norsk tekst uten
+oversetting og fanger opp konseptuell likhet på tvers av ulike formuleringer.
+
+\paragraph{Dokumentrepresentasjon.}
+Hvert innholdsdokument representeres som en strukturert tekstpassasje som
+inneholder tittel, innholdstype, målgruppe, relevante medisinske koder
+(ICD-10, ICPC-2, SNOMED, LIS) og brødtekst. Embedding-vektoren beregnes ved
+oppstart og lagres i databasen (se \autoref{sec:database}).
+E5-modellen bruker asymmetriske prefiks: spørringer prefigeres med
+\texttt{«query:~»} og dokumenter med \texttt{«passage:~»}, noe som gir bedre
+retrieval-ytelse enn symmetrisk enkoding \cite{wang2024multilingual}.
+
+\paragraph{Likhetsmåling.}
+Alle embeddings er L2-normaliserte enhetsvektorer. Kosinuslikhet reduseres
+dermed til et enkelt prikkprodukt:
+
+\begin{equation}
+\operatorname{sim}(\mathbf{q},\, \mathbf{d})
+= \mathbf{q} \cdot \mathbf{d}
+= \sum_{i=1}^{768} q_i \cdot d_i,
+\qquad \|\mathbf{q}\| = \|\mathbf{d}\| = 1.
+\end{equation}
+
+Under søk beregnes prikkproduktet mellom søkevektoren og alle lagrede
+dokumentvektorer i én vektorisert matriseoprasjon (NumPy), noe som gir
+$\mathcal{O}(n)$ kompleksitet uten behov for en dedikert vektordatabase.
+
+\subsubsection{Hybridfusjon: Reciprocal Rank Fusion}
+\label{sec:rrf-impl}
+
+Rangeringslistene fra BM25 og det semantiske søket slås sammen med Reciprocal
+Rank Fusion (RRF, se \autoref{sec:rrf-teori}) \cite{cormack2009reciprocal}:
+
+\begin{equation}
+\operatorname{RRF}(d)
+= \sum_{r\,\in\,\{r_{\mathrm{BM25}},\, r_{\mathrm{sem}}\}}
+  \frac{1}{k + r(d)},
+\end{equation}
+
+der $r(d)$ er rangposisjonen til dokument $d$ i den respektive listen og
+$k = 60$ er en konstant som demper bidraget fra høye posisjoner
+\cite{cormack2009reciprocal}. Dokumenter rangeres deretter i synkende
+rekkefølge etter RRF-skår.
+
+Fordelen med RRF fremfor en vektet scoresum er robusthet mot
+skaleringsforskjeller: BM25-skårer og kosinuslikheter er på ulike numeriske
+skalaer, men RRF bruker kun rangposisjoner og er dermed uavhengig av
+absolutte scoringsverdier. Empiriske studier har vist at RRF ofte overgår mer
+komplekse fusjonsmetoder \cite{cormack2009reciprocal}.
+
 \subsection{Database}
+\label{sec:database}
+
+Systemet bruker en MySQL-database for lagring av innhold, embeddings og
+søkelogg. De sentrale tabellene er beskrevet nedenfor.
+
+\subsubsection*{Innholdstabell: \texttt{content}}
+
+Tabellen lagrer alt indeksert innhold hentet fra HAPI
+\cite{helsedirektoratetAPI}. Embedding-vektoren lagres som en binær blob
+(768 floats $\times$ 4 bytes = 3\,072 bytes per dokument) og lastes inn i
+minnet ved oppstart for rask vektorisert søk.
+
+\begin{lstlisting}[language=SQL,
+    caption={Forenklet skjema for \texttt{content}-tabellen.},
+    label={lst:db-content}]
+CREATE TABLE content (
+    id          VARCHAR(100) PRIMARY KEY,
+    tittel      TEXT         NOT NULL,
+    tekst       LONGTEXT,
+    info_type   VARCHAR(50),
+    koder       JSON,              -- ICD-10, ICPC-2, SNOMED, LIS
+    maalgruppe  JSON,
+    embedding   BLOB,              -- 768-dim E5-vektor (binær)
+    path        VARCHAR(1000),
+    FULLTEXT INDEX idx_tittel (tittel),
+    FULLTEXT INDEX idx_tekst  (tekst)
+);
+\end{lstlisting}
+
+\subsubsection*{Søkelogg: \texttt{search\_logs} og \texttt{search\_results\_shown}}
+
+Alle søkehendelser og viste resultater logges med tilhørende signaler
+(semantisk likhet, nøkkelordsskår, type- og rollematch, posisjon).
+\texttt{click\_logs} registrerer brukerklikk og kan brukes som implisitt
+relevansfeedback for fremtidig læringsbasert rangering (LTR).

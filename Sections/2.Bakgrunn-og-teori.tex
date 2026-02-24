@@ -84,6 +84,7 @@ Denne litteraturgjennomgangen gir en omfattende oversikt over klinisk informasjo
 
 
 \subsubsection{Elastic search - (Document ranking) PRF BM25 }
+\label{sec:bm25}
 “The Probabilistic Relevance Framework: BM25 and Beyond” refers to a line of research in Information Retrieval (IR) that formalizes how we rank documents by relevance using probability theory. It originates from the Probabilistic Relevance Framework (PRF) and culminates (classically) in the BM25 ranking function, which is still a strong baseline in systems like Elasticsearch and Apache Lucene."
 
 % Probability Ranking Principle / PRF (conceptual form)
@@ -141,6 +142,7 @@ Samlet balanserer BM25 global termviktighet (IDF), lokal termfrekvens i dokument
 \cite{robertson2009bm25}
 
 \subsubsection{ RECIPROCAL RANK FUSION? (backend)}
+\label{sec:rrf-teori}
 
 Reciprocal Rank Fusion (RRF) er en enkel og effektiv metode for \textit{rank aggregation}, det vil si sammenslåing av flere rangeringslister til én samlet rangering. Metoden er \textit{unsupervised}, noe som innebærer at den ikke krever treningsdata, og den brukes ofte i hybride søkesystemer hvor flere uavhengige rankere (for eksempel BM25 og en vektorbasert modell) kombineres.
 
