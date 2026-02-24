@@ -13,38 +13,44 @@ Reciprocal Rank Fusion (RRF).
 
 Helsedirektoratet.no kjører på Enonic XP, et åpen kildekode-CMS og
 webapplikasjonsrammeverk som ble tatt i bruk i 2019 \cite{enonicCase}.
-Enonic XP benytter Elasticsearch som underliggende lagrings- og søkemotor
-\cite{enonicArchitecture}. Elasticsearch bruker BM25 (Best Matching 25)
-som standard relevansskåringsalgoritme (se \autoref{sec:bm25}).
-Søk på helsedirektoratet.no er dermed i praksis et termbasert søk der
-resultater rangeres etter grad av ordoverlapp mellom spørringen og
-dokumentinnholdet, vektet ved termfrekvens og invers dokumentfrekvens.
+Enonic XP benytter Elasticsearch som underliggende lagrings- og indekseringsmotor
+\cite{enonicArchitecture}, noe som i prinsippet gir tilgang til avanserte
+søkefunksjoner som BM25-rangering og vektorsøk.
+
+I møte med Helsedirektoratet ble det imidlertid bekreftet at disse mulighetene
+ikke er tatt i bruk \cite{meeting2026helsedir}: nettsiden benytter i dag CMSet
+sin standardfunksjonalitet for søk. I praksis er dette et nøkkelordssøk med
+enkel feltvekting -- treff i tittel og temafeltet gir høyere skår enn treff i
+brødteksten, og innholdstypene temaside og retningslinje prioriteres.
+Det benyttes ingen BM25-rangering, KI-baserte eller semantiske søkemetoder.
 
 Innholdet er tilgjengelig gjennom HAPI (Helsedirektoratets API-tjeneste),
 et åpent REST-API som leverer faglig innhold i JSON-format
 \cite{helsedirektoratetAPI}. Vi benytter HAPI som kilde for å populere
 vår egen database med innholdsdokumenter.
 
-Termbasert BM25-søk fungerer godt for presise, leksikalsk veldefinerte
-spørringer. Utfordringene oppstår typisk i tre situasjoner:
+Et enkelt nøkkelordssøk basert på tittel- og tekstmatch har klare begrensninger.
+Utfordringene er særlig tydelige i tre situasjoner:
 
 \begin{itemize}
     \item \textbf{Semantiske gap:} Søk med synonymer eller parafraserte
-          begreper gir ikke nødvendigvis relevante treff. En bruker som spør
-          om «samtale om drikkevaner» kan ha behov for innhold om
-          «motiverende intervju», uten at en ren termbasert modell kobler disse.
+          begreper gir ikke treff, selv når innholdet er relevant. En bruker
+          som søker etter «samtale om drikkevaner» finner ikke nødvendigvis
+          innhold om «motiverende intervju», fordi søket bare matcher eksakte
+          ord.
     \item \textbf{Terminologigap:} Fagpersoner og privatpersoner bruker ulike
-          ord om samme fenomen. BM25 håndterer ikke gapet mellom folkelig og
-          klinisk språkbruk.
-    \item \textbf{Lengdeskjevhet:} Innhold rangeres etter termoverlapp, ikke
-          konseptuell relevans. Et kortfattet, svært relevant dokument kan
-          tapes mot et lengre dokument med mange matchende termer.
+          ord om samme fenomen. Et rent ordbasert søk håndterer ikke gapet
+          mellom folkelig og klinisk språkbruk.
+    \item \textbf{Manglende rangering etter relevans:} Resultater rangeres
+          ikke etter konseptuell relevans, men etter enkel forekomst av
+          søkeord. Svært relevante, kortfattede dokumenter kan bli nedprioritert
+          til fordel for innhold som tilfeldig inneholder søketermen.
 \end{itemize}
 
 Funn fra kartleggingsfasen (se \autoref{sec:kartlegging}) understøtter at
 brukere opplever utfordringer med å finne relevant innhold, særlig ved
-utforskende søk. Dette motiverer en tilnærming som supplerer BM25 med
-semantisk forståelse.
+utforskende søk der de ikke kjenner den eksakte fagterminologien. Dette
+motiverer en tilnærming som kombinerer nøkkelordssøk med semantisk forståelse.
 
 \subsection{Søkearkitektur: hybrid søk}
 \label{sec:soek-arkitektur}
