@@ -1,103 +1,470 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="Arial, Helvetica, sans-serif">
-
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 900 560"
+   font-family="Arial, Helvetica, sans-serif"
+   version="1.1"
+   id="svg35"
+   sodipodi:docname="sidehierarki.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview35"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.86785714"
+     inkscape:cx="449.95885"
+     inkscape:cy="275.39095"
+     inkscape:window-width="1280"
+     inkscape:window-height="730"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg35" />
+  <defs
+     id="defs1">
+    <marker
+       id="arrowhead"
+       markerWidth="10"
+       markerHeight="7"
+       refX="9"
+       refY="3.5"
+       orient="auto">
+      <polygon
+         points="0 0, 10 3.5, 0 7"
+         fill="#555"
+         id="polygon1" />
     </marker>
   </defs>
-
   <!-- White background -->
-  <rect width="900" height="560" fill="white"/>
-
+  <rect
+     width="900"
+     height="560"
+     fill="white"
+     id="rect1" />
   <!-- ===== LEVEL 1: Forside ===== -->
-  <rect x="340" y="20" width="220" height="52" rx="8" fill="#003057"/>
-  <text x="450" y="47" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Forside</text>
-  <text x="450" y="64" text-anchor="middle" font-size="11" fill="#8ec5e0">rot: /</text>
-
+  <rect
+     x="340"
+     y="20"
+     width="220"
+     height="52"
+     rx="8"
+     fill="#003057"
+     id="rect2" />
+  <text
+     x="450"
+     y="47"
+     text-anchor="middle"
+     font-size="16"
+     font-weight="bold"
+     fill="white"
+     id="text2">Forside</text>
+  <text
+     x="450"
+     y="64"
+     text-anchor="middle"
+     font-size="11"
+     fill="#8ec5e0"
+     id="text3">rot: /</text>
   <!-- Arrow Level 1 → Level 2 -->
-  <line x1="450" y1="72" x2="450" y2="96" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-
+  <line
+     x1="450"
+     y1="72"
+     x2="450"
+     y2="96"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line3" />
   <!-- ===== LEVEL 2: Temaside Kategorier ===== -->
-  <rect x="30" y="100" width="840" height="76" rx="8" fill="#e8f2fa" stroke="#003057" stroke-width="1.5"/>
-  <text x="450" y="126" text-anchor="middle" font-size="13" font-weight="bold" fill="#003057">Temaside Kategorier  (7 kategorier)</text>
-  <text x="450" y="147" text-anchor="middle" font-size="10.5" fill="#333">Forebygging, diagnose og behandling  ·  Digitalisering og e-helse  ·  Lov og forskrift  ·  Helseberedskap</text>
-  <text x="450" y="165" text-anchor="middle" font-size="10.5" fill="#333">Autorisasjon og spesialistutdanning  ·  Tilskudd og finansiering  ·  Statistikk, registre og rapporter</text>
-
+  <rect
+     x="30"
+     y="100"
+     width="840"
+     height="76"
+     rx="8"
+     fill="#e8f2fa"
+     stroke="#003057"
+     stroke-width="1.5"
+     id="rect3" />
+  <text
+     x="450"
+     y="126"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="#003057"
+     id="text4">Temaside Kategorier  (7 kategorier)</text>
+  <text
+     x="450"
+     y="147"
+     text-anchor="middle"
+     font-size="10.5"
+     fill="#333"
+     id="text5">Forebygging, diagnose og behandling  ·  Digitalisering og e-helse  ·  Lov og forskrift  ·  Helseberedskap</text>
+  <text
+     x="450"
+     y="165"
+     text-anchor="middle"
+     font-size="10.5"
+     fill="#333"
+     id="text6">Autorisasjon og spesialistutdanning  ·  Tilskudd og finansiering  ·  Statistikk, registre og rapporter</text>
   <!-- Arrow Level 2 → Level 3 -->
-  <line x1="450" y1="176" x2="450" y2="200" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-
+  <line
+     x1="450"
+     y1="176"
+     x2="450"
+     y2="200"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line6" />
   <!-- ===== LEVEL 3: Temaside ===== -->
-  <rect x="275" y="204" width="350" height="52" rx="8" fill="#1a6496"/>
-  <text x="450" y="231" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Temaside</text>
-  <text x="450" y="248" text-anchor="middle" font-size="10.5" fill="#b8d8f0">/:temaKategori / :temaNavn</text>
-
+  <rect
+     x="275"
+     y="204"
+     width="350"
+     height="52"
+     rx="8"
+     fill="#1a6496"
+     id="rect6" />
+  <text
+     x="450"
+     y="231"
+     text-anchor="middle"
+     font-size="14"
+     font-weight="bold"
+     fill="white"
+     id="text7">Temaside</text>
+  <text
+     x="450"
+     y="248"
+     text-anchor="middle"
+     font-size="10.5"
+     fill="#b8d8f0"
+     id="text8">/:temaKategori / :temaNavn</text>
   <!-- Branching lines: vertical down then horizontal then 5 drops -->
   <!-- Vertical trunk from Level 3 center down to branch point -->
-  <line x1="450" y1="256" x2="450" y2="296" stroke="#555" stroke-width="1.5"/>
-
+  <line
+     x1="450"
+     y1="256"
+     x2="450"
+     y2="296"
+     stroke="#555"
+     stroke-width="1.5"
+     id="line8" />
   <!-- Horizontal spanning all 5 leaf centers: 104, 277, 450, 623, 796 -->
-  <line x1="104" y1="296" x2="796" y2="296" stroke="#555" stroke-width="1.5"/>
-
+  <line
+     x1="104"
+     y1="296"
+     x2="796"
+     y2="296"
+     stroke="#555"
+     stroke-width="1.5"
+     id="line9" />
   <!-- 5 vertical drops to boxes -->
-  <line x1="104" y1="296" x2="104" y2="322" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <line x1="277" y1="296" x2="277" y2="322" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <line x1="450" y1="296" x2="450" y2="322" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <line x1="623" y1="296" x2="623" y2="322" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-  <line x1="796" y1="296" x2="796" y2="322" stroke="#555" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-
+  <line
+     x1="104"
+     y1="296"
+     x2="104"
+     y2="322"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line10" />
+  <line
+     x1="277"
+     y1="296"
+     x2="277"
+     y2="322"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line11" />
+  <line
+     x1="450"
+     y1="296"
+     x2="450"
+     y2="322"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line12" />
+  <line
+     x1="623"
+     y1="296"
+     x2="623"
+     y2="322"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line13" />
+  <line
+     x1="796"
+     y1="296"
+     x2="796"
+     y2="322"
+     stroke="#555"
+     stroke-width="1.5"
+     marker-end="url(#arrowhead)"
+     id="line14" />
   <!-- ===== LEVEL 4: Innholdssider (5 typer) ===== -->
   <!-- Leaf box positions: x = center - 74, width = 148 -->
-
   <!-- Nyheter (center 104) -->
-  <rect x="30" y="326" width="148" height="52" rx="8" fill="#2e7d32"/>
-  <text x="104" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Nyheter</text>
-  <text x="104" y="369" text-anchor="middle" font-size="10" fill="#c8e6c9">/nyheter/...</text>
-
+  <rect
+     x="30"
+     y="326"
+     width="148"
+     height="52"
+     rx="8"
+     fill="#2e7d32"
+     id="rect14" />
+  <text
+     x="104"
+     y="352"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="white"
+     id="text14">Nyheter</text>
+  <text
+     x="104"
+     y="369"
+     text-anchor="middle"
+     font-size="10"
+     fill="#c8e6c9"
+     id="text15">/nyheter/...</text>
   <!-- Artikler (center 277) -->
-  <rect x="203" y="326" width="148" height="52" rx="8" fill="#2e7d32"/>
-  <text x="277" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Artikler</text>
-  <text x="277" y="369" text-anchor="middle" font-size="10" fill="#c8e6c9">/:kategori/...</text>
-
+  <rect
+     x="203"
+     y="326"
+     width="148"
+     height="52"
+     rx="8"
+     fill="#2e7d32"
+     id="rect15" />
+  <text
+     x="277"
+     y="352"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="white"
+     id="text16">Artikler</text>
+  <text
+     x="277"
+     y="369"
+     text-anchor="middle"
+     font-size="10"
+     fill="#c8e6c9"
+     id="text17">/:kategori/...</text>
   <!-- Rapport (center 450) -->
-  <rect x="376" y="326" width="148" height="52" rx="8" fill="#2e7d32"/>
-  <text x="450" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Rapport</text>
-  <text x="450" y="369" text-anchor="middle" font-size="10" fill="#c8e6c9">/statistikk/...</text>
-
+  <rect
+     x="376"
+     y="326"
+     width="148"
+     height="52"
+     rx="8"
+     fill="#2e7d32"
+     id="rect17" />
+  <text
+     x="450"
+     y="352"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="white"
+     id="text18">Rapport</text>
+  <text
+     x="450"
+     y="369"
+     text-anchor="middle"
+     font-size="10"
+     fill="#c8e6c9"
+     id="text19">/statistikk/...</text>
   <!-- Retningslinje (center 623) -->
-  <rect x="549" y="326" width="148" height="52" rx="8" fill="#2e7d32"/>
-  <text x="623" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Retningslinje</text>
-  <text x="623" y="369" text-anchor="middle" font-size="10" fill="#c8e6c9">/retningslinjer/...</text>
-
+  <rect
+     x="549"
+     y="326"
+     width="148"
+     height="52"
+     rx="8"
+     fill="#2e7d32"
+     id="rect19" />
+  <text
+     x="623"
+     y="352"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="white"
+     id="text20">Retningslinje</text>
+  <text
+     x="623"
+     y="369"
+     text-anchor="middle"
+     font-size="10"
+     fill="#c8e6c9"
+     id="text21">/retningslinjer/...</text>
   <!-- Statistikk (center 796) -->
-  <rect x="722" y="326" width="148" height="52" rx="8" fill="#2e7d32"/>
-  <text x="796" y="352" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Statistikk</text>
-  <text x="796" y="369" text-anchor="middle" font-size="10" fill="#c8e6c9">/statistikk/...</text>
-
+  <rect
+     x="722"
+     y="326"
+     width="148"
+     height="52"
+     rx="8"
+     fill="#2e7d32"
+     id="rect21" />
+  <text
+     x="796"
+     y="352"
+     text-anchor="middle"
+     font-size="13"
+     font-weight="bold"
+     fill="white"
+     id="text22">Statistikk</text>
+  <text
+     x="796"
+     y="369"
+     text-anchor="middle"
+     font-size="10"
+     fill="#c8e6c9"
+     id="text23">/statistikk/...</text>
   <!-- ===== BREADCRUMB EXAMPLE ===== -->
-  <text x="450" y="412" text-anchor="middle" font-size="11.5" fill="#555" font-style="italic">Eksempel på brødsmulesti:</text>
-
-  <rect x="30" y="420" width="840" height="38" rx="6" fill="#f8f9fa" stroke="#cccccc" stroke-width="1"/>
-
-  <text x="50" y="444" font-size="12" fill="#003057" font-weight="bold" text-decoration="underline">Forside</text>
-  <text x="108" y="444" font-size="13" fill="#888"> › </text>
-  <text x="126" y="444" font-size="12" fill="#003057" font-weight="bold" text-decoration="underline">Forebygging, diagnose og behandling</text>
-  <text x="398" y="444" font-size="13" fill="#888"> › </text>
-  <text x="416" y="444" font-size="12" fill="#003057" font-weight="bold" text-decoration="underline">Diabetes</text>
-  <text x="472" y="444" font-size="13" fill="#888"> › </text>
-  <text x="490" y="444" font-size="12" fill="#444">Nasjonal retningslinje for diabetes</text>
-
+  <text
+     x="450"
+     y="412"
+     text-anchor="middle"
+     font-size="11.5px"
+     fill="#555555"
+     font-style="italic"
+     id="text24">Eksempel på breadcrumbs:</text>
+  <rect
+     x="30"
+     y="420"
+     width="840"
+     height="38"
+     rx="6"
+     fill="#f8f9fa"
+     stroke="#cccccc"
+     stroke-width="1"
+     id="rect24" />
+  <text
+     x="50"
+     y="444"
+     font-size="12"
+     fill="#003057"
+     font-weight="bold"
+     text-decoration="underline"
+     id="text25">Forside</text>
+  <text
+     x="108"
+     y="444"
+     font-size="13"
+     fill="#888"
+     id="text26"> › </text>
+  <text
+     x="126"
+     y="444"
+     font-size="12"
+     fill="#003057"
+     font-weight="bold"
+     text-decoration="underline"
+     id="text27">Forebygging, diagnose og behandling</text>
+  <text
+     x="398"
+     y="444"
+     font-size="13"
+     fill="#888"
+     id="text28"> › </text>
+  <text
+     x="416"
+     y="444"
+     font-size="12"
+     fill="#003057"
+     font-weight="bold"
+     text-decoration="underline"
+     id="text29">Diabetes</text>
+  <text
+     x="472"
+     y="444"
+     font-size="13"
+     fill="#888"
+     id="text30"> › </text>
+  <text
+     x="490"
+     y="444"
+     font-size="12"
+     fill="#444"
+     id="text31">Nasjonal retningslinje for diabetes</text>
   <!-- ===== LEGEND ===== -->
-  <rect x="30" y="478" width="14" height="14" rx="2" fill="#003057"/>
-  <text x="50" y="490" font-size="11" fill="#444">Navigasjonsnivå</text>
-
-  <rect x="185" y="478" width="14" height="14" rx="2" fill="#1a6496"/>
-  <text x="205" y="490" font-size="11" fill="#444">Temaside</text>
-
-  <rect x="310" y="478" width="14" height="14" rx="2" fill="#2e7d32"/>
-  <text x="330" y="490" font-size="11" fill="#444">Innholdsside (innholdstype)</text>
-
-  <rect x="565" y="478" width="14" height="14" rx="2" fill="#f8f9fa" stroke="#cccccc"/>
-  <text x="585" y="490" font-size="11" fill="#444">Eksempel på brødsmulesti</text>
-
+  <rect
+     x="30"
+     y="478"
+     width="14"
+     height="14"
+     rx="2"
+     fill="#003057"
+     id="rect31" />
+  <text
+     x="50"
+     y="490"
+     font-size="11"
+     fill="#444"
+     id="text32">Navigasjonsnivå</text>
+  <rect
+     x="185"
+     y="478"
+     width="14"
+     height="14"
+     rx="2"
+     fill="#1a6496"
+     id="rect32" />
+  <text
+     x="205"
+     y="490"
+     font-size="11"
+     fill="#444"
+     id="text33">Temaside</text>
+  <rect
+     x="310"
+     y="478"
+     width="14"
+     height="14"
+     rx="2"
+     fill="#2e7d32"
+     id="rect33" />
+  <text
+     x="330"
+     y="490"
+     font-size="11"
+     fill="#444"
+     id="text34">Innholdsside (innholdstype)</text>
+  <rect
+     x="565"
+     y="478"
+     width="14"
+     height="14"
+     rx="2"
+     fill="#f8f9fa"
+     stroke="#cccccc"
+     id="rect34" />
+  <text
+     x="585"
+     y="490"
+     font-size="11px"
+     fill="#444444"
+     id="text35"
+     style="white-space:pre;inline-size:140.977"
+     xml:space="preserve"><tspan
+       x="585"
+       y="490"
+       id="tspan1">Eksempel på breadcrumbs</tspan></text>
 </svg>
