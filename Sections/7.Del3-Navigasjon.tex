@@ -1,1 +1,26 @@
 \section{Del III - Forbedret navigasjon}
+
+\subsection{Sidehierarki og navigasjonsstruktur}
+
+Nettsiden er strukturert i et hierarki med fire nivåer, fra forside til individuelle innholdssider.
+Hierarkiet bestemmer hvordan brødsmulestien bygges opp, og gir brukeren en klar oversikt over
+hvor i nettstedet de befinner seg.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/Figures/sidehierarki}
+    \caption{Sidehierarki – navigasjonsstruktur fra forside til innholdssider, med eksempel på brødsmulesti.}
+    \label{fig:sidehierarki}
+\end{figure}
+
+Hierarkiet er organisert som følger:
+
+\begin{enumerate}
+    \item \textbf{Forside} (\texttt{/}) – inngangspunktet til nettstedet.
+    \item \textbf{Temaside kategorier} – syv overordnede temaer (f.eks.\ \textit{Forebygging, diagnose og behandling}, \textit{Digitalisering og e-helse}) som hver representerer et faglig område.
+    \item \textbf{Temaside} – en spesifikk side innenfor en temakategori, identifisert av URL-stien \texttt{/:temaKategori/:temaNavn}.
+    \item \textbf{Innholdssider} – de faktiske innholdssidene brukeren navigerer til. Disse finnes i flere typer: nyheter (\texttt{/nyheter/...}), artikler, rapporter (\texttt{/statistikk/...}), retningslinjer (\texttt{/retningslinjer/...}) og statistikk.
+\end{enumerate}
+
+Brødsmulestien reflekterer dette hierarkiet direkte, slik som vist i eksempelet nederst i
+\autoref{fig:sidehierarki}: \textit{Forside › Forebygging, diagnose og behandling › Diabetes › Nasjonal retningslinje for diabetes}.
