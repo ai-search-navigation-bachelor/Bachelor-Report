@@ -4,8 +4,34 @@
 
 \subsection{Teori}
 
-\subsubsection{multilingual-e5}
-Base model for backend og trent opp med query generering 10 per dokument av groq... 
+\subsubsection{Multilingual-E5}
+\label{sec:multilingual-e5}
+
+\texttt{intfloat/multilingual-e5-base} \cite{wang2024multilingual} er en
+bienkoder-modell (\textit{bi-encoder}) basert på XLM-RoBERTa, trent med
+kontrastiv læring på flerspråklige spørring--passasje-par fra over 100 språk.
+Modellen produserer 768-dimensjonale embeddings som plasserer semantisk
+beslektede tekster nært hverandre i vektorrommet, uavhengig av eksakte
+ordvalg og formuleringer.
+
+E5-modellen bruker asymmetrisk enkoding: spørringer prefigeres med
+\texttt{"query:~"} og dokumenter med \texttt{"passage:~"} for at modellen skal
+lære ulike representasjoner for søk og innhold. Denne asymmetrien er vist å
+gi bedre retrieval-ytelse enn symmetrisk enkoding
+\cite{wang2024multilingual}.
+
+Embedding-vektorer L2-normaliseres til enhetsvektorer, slik at kosinuslikhet
+mellom en spørring $\mathbf{q}$ og et dokument $\mathbf{d}$ reduseres til
+et prikkprodukt:
+\[
+\operatorname{sim}(\mathbf{q}, \mathbf{d}) = \mathbf{q} \cdot \mathbf{d},
+\quad \|\mathbf{q}\| = \|\mathbf{d}\| = 1.
+\]
+
+Den flerspråklige arkitekturen gjør at modellen håndterer norsk tekst uten
+oversetting, og fanger konseptuell likhet på tvers av faglig og folkelig
+språkbruk -- noe som er særlig verdifullt for helseinformasjonssøk der
+fagtermer og hverdagsspråk ofte refererer til samme fenomen.
 
 \subsubsection{LTR -click boost}
 
