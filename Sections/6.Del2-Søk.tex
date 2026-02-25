@@ -87,11 +87,33 @@ dokumentlengden, $\operatorname{avgdl}$ er gjennomsnittlig dokumentlengde, og
 $k_1 = 1{,}2$ og $b = 0{,}75$ er standardparametrene (se \autoref{sec:bm25}
 og \cite{robertson2009bm25} for full utledning).
 
-I tillegg til standardformelen benytter vi en \textit{tittelboost}: termer
-som matcher i tittelfeltet bidrar med en høyere vektfaktor enn treff i
-brødteksten. Dette er i tråd med etablert praksis i søkesystemer som bruker
-feltvekting (BM25F) \cite{robertson2009bm25}, og reflekterer at tittelen
-typisk er den mest komprimerte og presise beskrivelsen av dokumentets relevans.
+IDF beregnes etter Robertson-Sparck Jones-varianten med addert 1 i logaritmen
+for å unngå negative verdier ved svært vanlige termer:
+
+\begin{equation}
+\operatorname{IDF}(t)
+=
+\log\!\left(1 + \frac{N - n_t + 0{,}5}{n_t + 0{,}5}\right),
+\end{equation}
+
+der $N$ er totalt antall dokumenter og $n_t$ er antall dokumenter som
+inneholder termen $t$.
+
+\paragraph{Tittelboost via termfrekvensmanipulasjon.}
+I stedet for feltvekting (BM25F) benytter vi en enklere tilnærming: under
+indeksering repeteres tittelteksten tre ganger og konkateneres med brødteksten
+til én enkelt indekstekst per dokument:
+
+\[
+\text{indekstekst} = \underbrace{\text{tittel} \;\|\; \text{tittel} \;\|\; \text{tittel}}_{3\times} \;\|\; \text{brødtekst}
+\]
+
+Effekten er at termfrekvensen $f(t,D)$ for titteltermer er tre ganger høyere
+enn den ville vært med umodifisert indeksering, noe som øker BM25-bidraget
+for titteltreff. Metoden er konseptuelt i tråd med feltvekting slik det
+beskrives i BM25F \cite{robertson2009bm25}, men krever ingen endring i
+selve rangeringsformelen. Det reflekterer at tittelen typisk er den mest
+komprimerte og presise beskrivelsen av dokumentets relevans.
 
 \subsubsection{Semantisk vektorsøk}
 \label{sec:semantisk-impl}
@@ -127,28 +149,75 @@ Under søk beregnes prikkproduktet mellom søkevektoren og alle lagrede
 dokumentvektorer i én vektorisert matriseoprasjon (NumPy), noe som gir
 $\mathcal{O}(n)$ kompleksitet uten behov for en dedikert vektordatabase.
 
-\subsubsection{Hybridfusjon: Reciprocal Rank Fusion}
+\subsubsection{Hybridfusjon: vektet Reciprocal Rank Fusion}
 \label{sec:rrf-impl}
 
-Rangeringslistene fra BM25 og det semantiske søket slås sammen med Reciprocal
-Rank Fusion (RRF, se \autoref{sec:rrf-teori}) \cite{cormack2009reciprocal}:
+Rangeringslistene fra BM25 og det semantiske søket slås sammen med en vektet
+variant av Reciprocal Rank Fusion
+(RRF, se \autoref{sec:rrf-teori}) \cite{cormack2009reciprocal}:
 
 \begin{equation}
-\operatorname{RRF}(d)
-= \sum_{r\,\in\,\{r_{\mathrm{BM25}},\, r_{\mathrm{sem}}\}}
-  \frac{1}{k + r(d)},
+\operatorname{RRF}_w(d)
+=
+\frac{w_{\mathrm{BM25}}}{k + r_{\mathrm{BM25}}(d)}
++
+\frac{w_{\mathrm{sem}}}{k + r_{\mathrm{sem}}(d)},
 \end{equation}
 
-der $r(d)$ er rangposisjonen til dokument $d$ i den respektive listen og
-$k = 60$ er en konstant som demper bidraget fra høye posisjoner
-\cite{cormack2009reciprocal}. Dokumenter rangeres deretter i synkende
-rekkefølge etter RRF-skår.
+der $r_{\mathrm{BM25}}(d)$ og $r_{\mathrm{sem}}(d)$ er rangposisjonene til
+dokument $d$ i henholdsvis BM25- og semantisk-listen, $k = 60$ er
+RRF-konstantens dempningsfaktor, og $w_{\mathrm{BM25}} = 0{,}3$,
+$w_{\mathrm{sem}} = 0{,}7$ er kildenes vekter.
+Dokumenter rangeres i synkende rekkefølge etter $\operatorname{RRF}_w$-skår.
+
+Den høyere vekten til semantisk søk ($0{,}7$) reflekterer at det semantiske
+søket fanger konseptuell relevans som BM25 kan misse ved synonymer og
+omskrivinger, mens BM25 bidrar med presis leksikalsk matching for eksakte
+fagtermer. Vektene er konfigurerbare via miljøvariablene
+\texttt{SEARCH\_RRF\_WEIGHT\_BM25} og \texttt{SEARCH\_RRF\_WEIGHT\_SEMANTIC}.
 
 Fordelen med RRF fremfor en vektet scoresum er robusthet mot
 skaleringsforskjeller: BM25-skårer og kosinuslikheter er på ulike numeriske
 skalaer, men RRF bruker kun rangposisjoner og er dermed uavhengig av
 absolutte scoringsverdier. Empiriske studier har vist at RRF ofte overgår mer
 komplekse fusjonsmetoder \cite{cormack2009reciprocal}.
+
+\subsubsection{Kandidatpool og post-RRF prosessering}
+\label{sec:kandidatpool}
+
+For å sikre at begge retrievere bidrar tilstrekkelig til fusjonen, henter
+systemet en utvidet \textit{kandidatpool} før RRF-steget. Poolstørrelsen er:
+
+\[
+N_{\text{pool}} = \min\!\bigl(\max(k \times 3,\; 100),\; 1000\bigr),
+\]
+
+der $k$ er ønsket antall sluttresultater (typisk 10). Poolstørrelsen er
+dermed alltid minst 100 kandidater og aldri mer enn 1000, uansett $k$.
+BM25 og semantisk søk kjøres uavhengig og henter hver sin pool, og RRF
+fusjonerer de to listene til én samlet rangering.
+
+\paragraph{Innholdstype-booster.}
+Etter RRF-fusjon multipliseres den kombinerte skåren med en
+innholdstype-faktor for å løfte innholdstyper av høy faglig autoritet:
+
+\begin{itemize}
+    \item \textbf{Temaside} ($\times 1{,}15$): Oppsummeringssider som samler
+          innhold innenfor ett fagområde.
+    \item \textbf{Retningslinje} ($\times 1{,}10$): Faglig normerende
+          retningslinjer med høy autoritet.
+\end{itemize}
+
+Boostfaktorene er konfigurerbare via miljøvariablene
+\texttt{SEARCH\_BOOST\_TEMASIDE} og \texttt{SEARCH\_BOOST\_RETNINGSLINJE}.
+Alle andre innholdstyper (veileder, fagprosedyre, faktaark, artikkel) beholder
+opprinnelig RRF-skår uten modifikasjon.
+
+\paragraph{Skårnormalisering.}
+Etter sortering normaliseres de kombinerte skårene til intervallet $[0,1]$
+med min-maks-normalisering over kandidatpoolen, slik at sluttresultatene
+presenteres med en intuitiv relevansindikator uavhengig av absolutte
+RRF-verdier.
 
 \subsection{Database}
 \label{sec:database}
