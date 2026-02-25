@@ -11,7 +11,7 @@ Reciprocal Rank Fusion (RRF).
 \subsection{Søk på helsedirektoratet.no i dag}
 \label{sec:soek-i-dag}
 
-Helsedirektoratet.no kjører på Enonic XP, et åpen kildekode-CMS og
+Helsedirektoratet.no kjører på Enonic XP, et åpen kildekode-CMS (Content Managment System) og
 webapplikasjonsrammeverk som ble tatt i bruk i 2019 \cite{enonicCase}.
 Enonic XP benytter Elasticsearch som underliggende lagrings- og indekseringsmotor
 \cite{enonicArchitecture}, noe som i prinsippet gir tilgang til avanserte
@@ -20,7 +20,7 @@ søkefunksjoner som BM25-rangering og vektorsøk.
 I møte med Helsedirektoratet ble det imidlertid bekreftet at disse mulighetene
 ikke er tatt i bruk \cite{meeting2026helsedir}: nettsiden benytter i dag CMSet
 sin standardfunksjonalitet for søk. I praksis er dette et nøkkelordssøk med
-enkel feltvekting -- treff i tittel og temafeltet gir høyere skår enn treff i
+enkel feltvekting -- treff i tittel og temafeltet gir høyere "score" enn treff i
 brødteksten, og innholdstypene temaside og retningslinje prioriteres.
 Det benyttes ingen BM25-rangering, KI-baserte eller semantiske søkemetoder.
 
