@@ -15,11 +15,12 @@ beskrives i kapitlene~6 og~7.
 \end{figure}
 
 Figur~\ref{fig:tech-stack} viser en oversikt over de ulike komponentene i systemet.
-Frontend er bygget med React~\cite{reactjs-docs} og TypeScript og bruker Vite som
-byggverktøy. Grensesnittet følger Digdirs designsystem og kommuniserer med backend via
-et RESTful-API (Representational State Transfer).
+\hyperlink{ord:frontend}{Frontend} er bygget med React~\cite{reactjs-docs} og TypeScript
+og bruker Vite som byggverktøy. Grensesnittet følger Digdirs designsystem og kommuniserer
+med \hyperlink{ord:backend}{backend} via et RESTful-API (Representational State Transfer).
 
-Backend er implementert i Python med FastAPI-rammeverket~\cite{fastapi-docs}, et moderne
+\hyperlink{ord:backend}{Backend} er implementert i Python med
+FastAPI-\hyperlink{ord:rammeverk}{rammeverket}~\cite{fastapi-docs}, et moderne
 asynkront rammeverk som automatisk genererer API-dokumentasjon. Backend håndterer
 søkespørringer, innhenting av innhold og logging av brukeratferd. Den er koblet til en
 MySQL~8-database der innhold, søkelogg og klikkstatistikk lagres.
@@ -33,8 +34,8 @@ og temautdrag. I prototypen brukes HAPI på to måter:
     \item Frontend henter utdypende detaljfelter (f.eks.\ begrunnelse og
         styrkegradering for anbefalinger) direkte fra HAPI for innhold som ikke
         er fullstendig lagret i den lokale databasen.
-    \item Backend tilbyr et proxy-endepunkt mot HAPI slik at API-nøkkelen ikke
-        eksponeres i nettleseren.
+    \item Backend tilbyr et \hyperlink{ord:proxy}{proxy}-endepunkt mot HAPI slik at
+        API-nøkkelen ikke eksponeres i nettleseren.
 \end{itemize}
 
 \subsection{Infrastruktur}
@@ -55,12 +56,14 @@ Prototypen vil være tilgjengelig t.o.m. 21. juni.
 
 \subsubsection{Containerisering med Docker}
 
-Alle tjenester på VM-en kjøres som Docker-containere~\cite{docker-docs} og styres med
-Docker~Compose. Konfigurasjonen i \texttt{docker-compose.yml} definerer to tjenester:
+Alle tjenester på VM-en kjøres som \hyperlink{ord:docker}{Docker}-containere~\cite{docker-docs}
+og styres med \hyperlink{ord:docker-compose}{Docker~Compose}. Konfigurasjonen i
+\texttt{docker-compose.yml} definerer to tjenester:
 
 \begin{itemize}
-    \item \textbf{db} -- MySQL~8-container med et vedvarende datavolum. Databasen
-        initialiseres automatisk fra et SQL-oppsettskript ved første oppstart.
+    \item \textbf{db} -- MySQL~8-\hyperlink{ord:container}{container} med et vedvarende
+        datavolum. Databasen initialiseres automatisk fra et SQL-oppsettskript ved første
+        oppstart.
     \item \textbf{backend} -- Applikasjonscontainer bygget fra prosjektets
         \texttt{Dockerfile}. Kjører FastAPI via Uvicorn-serveren og starter
         ikke før \texttt{db}-containeren er bekreftet frisk (\textit{healthy}).
@@ -72,7 +75,8 @@ klar til å ta imot forespørsler.
 
 \subsubsection{Nginx som reverse proxy}
 
-På VM-en fungerer Nginx~\cite{nginx-docs} som reverse proxy foran applikasjonen.
+På VM-en fungerer \hyperlink{ord:nginx}{Nginx}~\cite{nginx-docs} som
+\hyperlink{ord:reverse-proxy}{reverse proxy} foran applikasjonen.
 Frontend serveres statisk fra \texttt{/var/www/app}, mens alle forespørsler til stien
 \texttt{/api} videresendes til backend-containeren på port~8000. Denne oppdelingen
 gjør at frontend og backend fremstår som én tjeneste for nettleseren. HTTPS er aktivert
