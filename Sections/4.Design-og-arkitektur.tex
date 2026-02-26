@@ -1,158 +1,180 @@
 \section{Design og arkitektur}
 
+Dette kapittelet beskriver det tekniske oppsettet av prototypen -- hvilke teknologier
+som er valgt, hvordan infrastrukturen er organisert, og hvordan endringer rulles ut
+automatisk. Selve søke- og navigasjonsløsningene som er bygget oppå denne arkitekturen
+beskrives i kapitlene~6 og~7.
 
-\subsection{teknologier}
-
-
+\subsection{Teknologistack}
 
 \begin{figure}[H]
     \centering
     \includesvg[width=1.0\textwidth]{Images/Figures/helsedirAiTechStack}
-    \caption{Oppsett av design på prosjektet....}
-    \label{fig:organization-map}
+    \caption{Oversikt over teknologistacken som er benyttet i prototypen.}
+    \label{fig:tech-stack}
 \end{figure}
 
+Figur~\ref{fig:tech-stack} viser en oversikt over de ulike komponentene i systemet.
+Frontend er bygget med React~\cite{reactjs-docs} og TypeScript og bruker Vite som
+byggverktøy. Grensesnittet følger Digdirs designsystem og kommuniserer med backend via
+et RESTful-API (Representational State Transfer).
 
-For frontend blir det brukt react og typescript. Denne er koblet til en backend med bruk av REST-ful api implementert i python og tett bruk av fastAPI. Backend er igjen koblet til vår database som er en MySQL database. Frontenden er også koblet til helsedirektoratet sin API (HAPI) for henting av ekstra materialer som vi ikke har tilgjengelig i databasen. 
+Backend er implementert i Python med FastAPI-rammeverket~\cite{fastapi-docs}, et moderne
+asynkront rammeverk som automatisk genererer API-dokumentasjon. Backend håndterer
+søkespørringer, innhenting av innhold og logging av brukeratferd. Den er koblet til en
+MySQL~8-database der innhold, søkelogg og klikkstatistikk lagres.
 
-open stack setup / bakcend frontedn integrasjon + github actions. 
-vm (ubuntu linux) / doocker
+\paragraph{Helsedirektoratets API (HAPI)} er et eksternt REST-grensesnitt som gir
+tilgang til faglig innhold publisert av Helsedirektoratet~\cite{helsedir-api-docs}.
+Innholdet er strukturert etter type -- blant annet faglige anbefalinger, retningslinjer
+og temautdrag. I prototypen brukes HAPI på to måter:
 
-\subsection{Oppsett av vm}
+\begin{itemize}
+    \item Frontend henter utdypende detaljfelter (f.eks.\ begrunnelse og
+        styrkegradering for anbefalinger) direkte fra HAPI for innhold som ikke
+        er fullstendig lagret i den lokale databasen.
+    \item Backend tilbyr et proxy-endepunkt mot HAPI slik at API-nøkkelen ikke
+        eksponeres i nettleseren.
+\end{itemize}
+
+\subsection{Infrastruktur}
+
+\subsubsection{Virtuell maskin}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Images/vm-topologi-skyhiigh.png}
-    \caption{Topologien over hvordan vm er satt opp i skyhiigh på ntnu sitt globale netverk.}
+    \caption{Topologien over hvordan VM-en er satt opp i SkyHigh på NTNUs globale nettverk.}
     \label{fig:vm-setup}
 \end{figure}
 
-Figur \ref{fig:vm-setup} viser hvordan vi har satt opp prototypen på en virtuell maskin (vm) med linux ubnutu system som er koblet til ntnu sitt globale nettverk slik at det skal være lettere for eksterne parter å teste ut løsningene våre. Denne vil være tilgjengelig og oppe å kjøre t.o..m 31.Juni. 
+Figur~\ref{fig:vm-setup} viser hvordan prototypen er kjørt på en virtuell maskin (VM)
+med Ubuntu Linux i SkyHigh, NTNUs OpenStack-baserte skytjeneste. VM-en er koblet til
+NTNUs globale nettverk slik at eksterne parter kan teste løsningene uten VPN.
+Prototypen vil være tilgjengelig t.o.m. 30. juni.
 
-\paragraph{Github actions} er brukt her for å lett kunne få de forskjellige versjonene opp på vm'en.
+\subsubsection{Containerisering med Docker}
 
-Først kjører man en pull request til dev hvor github actions er satt opp med følgende yaml fil som kontorllerer at innholdet funker med blant annet å kjøre lint scan og typecheck som vist i \ref{script:yaml-dev}:
-\begin{lstlisting}[language=Python, caption={Example script}, label={script:yaml-dev}]
+Alle tjenester på VM-en kjøres som Docker-containere~\cite{docker-docs} og styres med
+Docker~Compose. Konfigurasjonen i \texttt{docker-compose.yml} definerer to tjenester:
+
+\begin{itemize}
+    \item \textbf{db} -- MySQL~8-container med et vedvarende datavolum. Databasen
+        initialiseres automatisk fra et SQL-oppsettskript ved første oppstart.
+    \item \textbf{backend} -- Applikasjonscontainer bygget fra prosjektets
+        \texttt{Dockerfile}. Kjører FastAPI via Uvicorn-serveren og starter
+        ikke før \texttt{db}-containeren er bekreftet frisk (\textit{healthy}).
+\end{itemize}
+
+Begge containerne er konfigurert med helsesjekker. Backend eksponerer et
+\texttt{/health}-endepunkt som Docker bruker til å bekrefte at tjenesten er
+klar til å ta imot forespørsler.
+
+\subsubsection{Nginx som reverse proxy}
+
+På VM-en fungerer Nginx~\cite{nginx-docs} som reverse proxy foran applikasjonen.
+Frontend serveres statisk fra \texttt{/var/www/app}, mens alle forespørsler til stien
+\texttt{/api} videresendes til backend-containeren på port~8000. Denne oppdelingen
+gjør at frontend og backend fremstår som én tjeneste for nettleseren. HTTPS er aktivert
+via NTNUs domene.
+
+\subsection{CI/CD med GitHub Actions}
+
+GitHub Actions~\cite{github-actions-docs} er brukt for å automatisere
+kvalitetskontroll og utrulling (CI/CD -- Continuous Integration/Continuous Deployment).
+Det er satt opp tre arbeidsflyter som til sammen utgjør en pipeline fra kodeendring til
+kjørende produksjonstjeneste.
+
+\paragraph{PR-byggsjekk} kjøres automatisk ved pull request mot
+\texttt{dev}-grenen og kontrollerer at koden er fri for lint-feil og typeproblemer
+før den merges, som vist i kode~\ref{kode:yaml-pr}:
+
+\begin{lstlisting}[language=yaml,
+    caption={GitHub Actions: PR-byggsjekk for frontend},
+    label={kode:yaml-pr}]
 name: PR Build Check
-
 on:
   pull_request:
     branches: ["dev"]
-    types: [opened, synchronize, reopened, ready_for_review]
-  workflow_dispatch:
-    inputs:
-      run_build:
-        description: "Run npm run build (manual only)"
-        required: true
-        default: false
-        type: boolean
-
-concurrency:
-  group: pr-build-check-${{ github.event.pull_request.number || github.run_id }}
-  cancel-in-progress: true
-
 jobs:
   prebuild-checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20.19.0"
           cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+\end{lstlisting}
 
-      - name: Install
-        run: npm ci
+\paragraph{Frontend-utrulling} kjøres automatisk når endringer merges til
+\texttt{main}. Arbeidsflyten bygger applikasjonen, kopierer den til VM-en og
+laster Nginx på nytt. Avslutningsvis kjøres en røyktest mot det offentlige
+domenet for å bekrefte at tjenesten svarer, som vist i kode~\ref{kode:yaml-frontend}:
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npx tsc --noEmit
-
-  build:
-    if: github.event_name == 'workflow_dispatch' && (inputs.run_build == true || inputs.run_build == 'true')
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: prebuild-checks
-
+\begin{lstlisting}[language=yaml,
+    caption={GitHub Actions: Utrulling av frontend},
+    label={kode:yaml-frontend}]
+name: Deploy frontend
+on:
+  push:
+    branches: ["main"]
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, prod]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20.19.0"
+          node-version: "20"
           cache: "npm"
-
-      - name: Install
-        run: npm ci
-
+      - run: npm ci
       - name: Build
         env:
           VITE_API_BASE_URL: /api
-          VITE_HELSEDIR_API_KEY: ci-placeholder
+          VITE_HELSEDIR_API_KEY: ${{ secrets.VITE_HELSEDIR_API_KEY }}
         run: npm run build
+      - run: sudo rsync -a --delete dist/ /var/www/app/
+      - run: sudo nginx -t && sudo systemctl reload nginx
+      - run: curl -fsS https://vm.idatg2901-v26-helsdir.iaas.iik.ntnu.no/api/health
 \end{lstlisting}
-Deretter
-Hver gang man gjør en pull request (pr) til main og merger vil github actions automatisk kjøre en yaml fil med samme konsept på front og back-end som laster evt. laster ned nye oppdateringer og så bygger docker filen på nytt med nyeste versjon som vist i :
 
+\paragraph{Backend-utrulling} henter nyeste kode fra Git og bygger
+Docker-containeren på nytt. Arbeidsflyten venter deretter på at helsesjekken
+godkjennes -- noe som sikrer at en mislykket oppdatering oppdages umiddelbart,
+som vist i kode~\ref{kode:yaml-backend}:
 
-
-\begin{lstlisting}[language=Python, caption={Example script}, label={script:yaml-main}]
+\begin{lstlisting}[language=yaml,
+    caption={GitHub Actions: Utrulling av backend},
+    label={kode:yaml-backend}]
 name: Deploy backend (prod)
-
 on:
-  workflow_dispatch:
   push:
     branches: ["main"]
-
-concurrency:
-  group: deploy-prod-vm
-  cancel-in-progress: false
-
 jobs:
   deploy:
     runs-on: [self-hosted, prod]
     steps:
       - name: Deploy on VM
         run: |
-          set -e
           cd /home/ubuntu/helsedir-ai-backend
-
           git fetch origin
           git reset --hard origin/main
-
-          echo "Deployed commit: $(git rev-parse --short HEAD)"
-
           docker compose build backend
           docker compose up -d --no-deps backend
-
-          docker compose ps
-
-          # Wait for container health status
           for i in {1..100}; do
-            status=$(docker inspect -f '{{.State.Health.Status}}' helsedir-ai-backend || true)
-            if [ "$status" = "healthy" ]; then
-              echo "Health check passed"
-              exit 0
-            fi
-            if [ "$status" = "unhealthy" ]; then
-              echo "Health check reported unhealthy"
-              docker compose logs --tail=200 backend
-              exit 1
-            fi
-            echo "Waiting for health check... ($i/100)"
+            status=$(docker inspect \
+              -f '{{.State.Health.Status}}' helsedir-ai-backend)
+            [ "$status" = "healthy" ] && exit 0
+            [ "$status" = "unhealthy" ] && exit 1
             sleep 3
           done
-
-          echo "Health check timed out"
-          docker compose logs --tail=200 backend
-          exit 1
 \end{lstlisting}
+
+Alle tre arbeidsflytene kjøres på en selvhostet GitHub Actions-runner
+(\texttt{self-hosted, prod}) som er installert direkte på VM-en. Dette gjør at
+utrulling skjer uten å sende kode over nettverket -- runneren har allerede tilgang
+til det lokale filsystemet og Docker-miljøet på maskinen.

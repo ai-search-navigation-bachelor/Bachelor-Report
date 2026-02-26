@@ -206,7 +206,18 @@
     stringstyle=\color{reportred},
     commentstyle=\color{reportgreen},
     identifierstyle=\color{black},
-    numberstyle=\fontsize{7}{8}\selectfont
+    numberstyle=\fontsize{7}{8}\selectfont,
+    breaklines=true,
+    breakatwhitespace=true
+}
+
+\lstdefinelanguage{yaml}{
+  sensitive=true,
+  comment=[l]{\#},
+  commentstyle=\color{reportgreen}\itshape,
+  morestring=[b]",
+  morestring=[b]',
+  stringstyle=\color{reportred},
 }
 
 
