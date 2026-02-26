@@ -191,3 +191,28 @@ Artikkelen \textit{Designing Health Websites Based on Users’ Web-Based Informa
 I en observasjonsstudie sammenlignet de BHX med en eksisterende helseportal ved hjelp av både kvalitative og kvantitative metoder. De fant at et interaktivt grensesnitt som støtter dynamisk informasjonsutforskning kan forbedre brukernes opplevelse og engasjement, øke antallet undersøkende handlinger, og fremme læring. Studien identifiserer fire sentrale designhensyn for helseinformasjons-søkesider: \\(1) dynamisk informasjonsomfang, \\(2) støtte for \textit{serendipity}, \\(3) hensyn til tillit, og \\(4) interaktivitet, som alle kan bedre brukeropplevelsen ved søk og navigasjon på helseinformasjonsnettsteder.
 
 \cite{pang2016designing}
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Universell utforming og WCAG}
+\label{sec:wcag-teori}
+
+\textit{Web Content Accessibility Guidelines} (WCAG) er den internasjonalt
+anerkjente standarden for tilgjengelig webinnhold, utgitt av World Wide Web
+Consortium (W3C) \cite{wcag21}. Den gjeldende versjonen, WCAG~2.1, er bygget
+rundt fire prinsipper -- Perceivable, Operable, Understandable og Robust
+(POUR) -- og opererer med samsvarsnivåene A (minimum), AA og AAA. I Norge er
+AA lovpålagt for offentlige virksomheter gjennom \textit{Forskrift om
+universell utforming av IKT-løsninger} \cite{lovdata-uu}, hjemlet i
+likestillings- og diskrimineringsloven~§~18. For navigasjonskomponenter er
+de mest sentrale kriteriene 1.4.3 (fargekontrast), 2.1.1
+(tastaturnavigasjon), 2.4.1 (hopplenke), 2.4.7 (fokusindikator) og
+4.1.2 (navn og rolle på interaktive elementer).
+
+Helsedirektoratets publiserte tilgjengelighetserklæring angir status
+\textit{delvis samsvar} med WCAG~2.1 \cite{uustatus-helsedir}. Av
+48 regulatoriske krav er 27 ikke oppfylt, og erklæringen identifiserer
+spesifikt at noen knapper og lenker ikke er tilgjengelige via tastatur,
+at fokusrekkefølgen er inkonsekvent på enkelte sider, og at interaktive
+komponenter mangler programmatisk tilgjengelig navn og rolle (kriterium
+4.1.2). Vår prototype for forbedret navigasjon og søk sikter mot å lukke
+nettopp disse manglene.

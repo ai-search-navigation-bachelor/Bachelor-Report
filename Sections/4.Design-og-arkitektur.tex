@@ -12,7 +12,147 @@
     \label{fig:organization-map}
 \end{figure}
 
+
+For frontend blir det brukt react og typescript. Denne er koblet til en backend med bruk av REST-ful api implementert i python og tett bruk av fastAPI. Backend er igjen koblet til vår database som er en MySQL database. Frontenden er også koblet til helsedirektoratet sin API (HAPI) for henting av ekstra materialer som vi ikke har tilgjengelig i databasen. 
+
 open stack setup / bakcend frontedn integrasjon + github actions. 
 vm (ubuntu linux) / doocker
 
+\subsection{Oppsett av vm}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/vm-topologi-skyhiigh.png}
+    \caption{Topologien over hvordan vm er satt opp i skyhiigh på ntnu sitt globale netverk.}
+    \label{fig:vm-setup}
+\end{figure}
+
+Figur \ref{fig:vm-setup} viser hvordan vi har satt opp prototypen på en virtuell maskin (vm) med linux ubnutu system som er koblet til ntnu sitt globale nettverk slik at det skal være lettere for eksterne parter å teste ut løsningene våre. Denne vil være tilgjengelig og oppe å kjøre t.o..m 31.Juni. 
+
+\paragraph{Github actions} er brukt her for å lett kunne få de forskjellige versjonene opp på vm'en.
+
+Først kjører man en pull request til dev hvor github actions er satt opp med følgende yaml fil som kontorllerer at innholdet funker med blant annet å kjøre lint scan og typecheck som vist i \ref{script:yaml-dev}:
+\begin{lstlisting}[language=Python, caption={Example script}, label={script:yaml-dev}]
+name: PR Build Check
+
+on:
+  pull_request:
+    branches: ["dev"]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      run_build:
+        description: "Run npm run build (manual only)"
+        required: true
+        default: false
+        type: boolean
+
+concurrency:
+  group: pr-build-check-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  prebuild-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.0"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+  build:
+    if: github.event_name == 'workflow_dispatch' && (inputs.run_build == true || inputs.run_build == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: prebuild-checks
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.0"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        env:
+          VITE_API_BASE_URL: /api
+          VITE_HELSEDIR_API_KEY: ci-placeholder
+        run: npm run build
+\end{lstlisting}
+Deretter
+Hver gang man gjør en pull request (pr) til main og merger vil github actions automatisk kjøre en yaml fil med samme konsept på front og back-end som laster evt. laster ned nye oppdateringer og så bygger docker filen på nytt med nyeste versjon som vist i :
+
+
+
+\begin{lstlisting}[language=Python, caption={Example script}, label={script:yaml-main}]
+name: Deploy backend (prod)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: deploy-prod-vm
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, prod]
+    steps:
+      - name: Deploy on VM
+        run: |
+          set -e
+          cd /home/ubuntu/helsedir-ai-backend
+
+          git fetch origin
+          git reset --hard origin/main
+
+          echo "Deployed commit: $(git rev-parse --short HEAD)"
+
+          docker compose build backend
+          docker compose up -d --no-deps backend
+
+          docker compose ps
+
+          # Wait for container health status
+          for i in {1..100}; do
+            status=$(docker inspect -f '{{.State.Health.Status}}' helsedir-ai-backend || true)
+            if [ "$status" = "healthy" ]; then
+              echo "Health check passed"
+              exit 0
+            fi
+            if [ "$status" = "unhealthy" ]; then
+              echo "Health check reported unhealthy"
+              docker compose logs --tail=200 backend
+              exit 1
+            fi
+            echo "Waiting for health check... ($i/100)"
+            sleep 3
+          done
+
+          echo "Health check timed out"
+          docker compose logs --tail=200 backend
+          exit 1
+\end{lstlisting}

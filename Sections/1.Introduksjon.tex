@@ -1,6 +1,16 @@
 \section{Innledning}
 
-Helsedirektoratet.no er en sentral informasjons- og kunnskapsplattform for helse- og omsorgssektoren i Norge, og brukes av både fagpersoner, offentlige aktører og privatpersoner. Nettstedet publiserer et stort volum innhold med ulike dokumenttyper og informasjonsbehov, noe som stiller høye krav til søk og navigasjon. Denne oppgaven undersøker hvordan gjenfinnbarheten kan forbedres gjennom en kombinasjon av AI-støttet søk og en mer støttende navigasjonsopplevelse.
+Helsedirektoratet.no er en sentral informasjons- og kunnskapsplattform for helse- og omsorgssektoren i Norge, og brukes av både fagpersoner, offentlige aktører og privatpersoner. Nettstedet publiserer et stort volum innhold med ulike dokumenttyper og informasjonsbehov, noe som stiller høye krav til søk og navigasjon. Denne oppgaven undersøker hvordan gjenfinnbarheten kan forbedres gjennom en kombinasjon av Kunsti intelligens (KI) støttet søk og en mer støttende navigasjonsopplevelse.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/helsedirektoratet.no/helsedirektoratet-forside.png}
+    \caption{Forsiden på helsedirektoratet.no som viser to av syv temaside kategorier.}
+    \label{fig:Helsedir-forside}
+\end{figure}
+
+Figur \ref{fig:Helsedir-forside} viser hva man møter når man åpner helsedirektoratet.no. Hovedoppsettet her er søkefunksjonaliteten og de forskjellige kategoriseringene av informasjon man kan navigere etter.  
+
 
 \subsection{Helsedirektoratet.no}
 \label{sec:helsedir}
@@ -78,7 +88,16 @@ Prosjektet gjennomføres innenfor rammene av en bacheloroppgave (22,5 studiepoen
 
 Prosjektgruppen har ikke hatt tilgang til intern infrastruktur, kildekode eller produksjonsmiljøer tilknyttet helsedirektoratet.no. Prototypen baserer seg derfor på offentlig tilgjengelig informasjon og åpne API-er, og implementeres som en selvstendig løsning utviklet fra bunnen av.
 
-For å sikre gjennomførbarhet er arbeidet avgrenset til funksjonalitet som direkte påvirker søk og navigasjon. Innhold uten vesentlig relevans for informasjonsgjenfinning (f.eks.\ nyheter, arrangementer og annet redaksjonelt innhold) inngår ikke i prototypen. Videre er prototypen avgrenset til et utvalg temasider som brukes som representative eksempler.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/helsedirektoratet.no/helsedir-forside-avgrensninger.png}
+    \caption{Forsiden på helsedirektoratet.no som viser underinformasjon som vi ikke har tatt med i prototypen.}
+    \label{fig:Helsedir-forside-avgrensninger}
+\end{figure}
+
+
+
+For å sikre gjennomførbarhet er arbeidet avgrenset til funksjonalitet som direkte påvirker søk og navigasjon. Innhold uten vesentlig relevans for informasjonsgjenfinning (f.eks.\ nyheter, arrangementer og annet redaksjonelt innhold) inngår ikke i prototypen som vist i figur \ref{fig:Helsedir-forside-avgrensninger}. Videre er prototypen avgrenset til et utvalg temasider som brukes som representative eksempler.
 
 Ettersom prosjektet ikke har tilgang til en etablert brukerbase, gjennomføres evalueringen med et begrenset antall testbrukere. Resultatene må derfor tolkes som indikative for forbedringspotensial, ikke som endelig effekt i et produksjonsmiljø.
 

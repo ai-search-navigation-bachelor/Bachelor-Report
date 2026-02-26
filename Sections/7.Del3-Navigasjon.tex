@@ -1,4 +1,4 @@
-\section{Del III --- Forbedret navigasjon}
+\section{Forbedret navigasjon}
 \label{sec:del3-navigasjon}
 
 Denne delen beskriver navigasjonskomponentene i prototypen. Vi starter med
@@ -8,46 +8,12 @@ implementert, med en før/etter-gjennomgang for hver. Motivasjonen for
 valgene er forankret i funn fra brukerundersøkelsene (se
 \autoref{sec:brukerundersokelser}).
 
-% ─────────────────────────────────────────────────────────────
-\subsection{Navigasjon på helsedirektoratet.no i dag}
-\label{sec:nav-i-dag}
 
-% TODO: Legg inn skjermbilde av dagens hd.no header/meny/brødsmulesti
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\textwidth]{Images/Screenshots/hd-nav-idag}
-%     \caption{Navigasjon på helsedirektoratet.no per 2025.}
-%     \label{fig:hd-nav-idag}
-% \end{figure}
-
-Navigasjonsstrukturen på helsedirektoratet.no har i dag følgende
-karakteristika:
-
-\begin{itemize}
-    \item \textbf{Brødsmulesti:} Sidene har brødsmulesti, men den er ikke
-          konsekvent synlig på alle innholdstyper og gir begrenset
-          kontekstuell støtte på dype sider.
-    \item \textbf{Meny:} En global meny gir tilgang til de ulike
-          fagområdene, men presentasjonen er flat og gir lite visuell
-          støtte til å forstå hierarki og innholdets omfang.
-    \item \textbf{Innholdssider:} Lange dokumenter (retningslinjer,
-          veiledere) mangler en lokal innholdsfortegnelse i sidemeny.
-          Brukeren må scrolle for å navigere i dokumentet.
-    \item \textbf{Søkeintegrasjon i navigasjon:} Søket er separert fra
-          navigasjonen, og resultatene gir lite kontekstuell filtrering
-          etter innholdstype.
-\end{itemize}
-
-Funn fra brukerundersøkelsene (se \autoref{sec:brukerundersokelser})
-understøtter at disse begrensningene skaper friksjon, særlig for
-fagpersoner som navigerer i komplekse dokumentstrukturer.
-
-% ─────────────────────────────────────────────────────────────
 \subsection{Sidehierarki og navigasjonsstruktur}
 \label{sec:sidehierarki}
 
 Nettsiden er strukturert i et hierarki med fire nivåer, fra forside til
-individuelle innholdssider. Hierarkiet bestemmer hvordan brødsmulestien
+individuelle innholdssider. Hierarkiet bestemmer hvordan breadcrumbsen
 bygges opp, og gir brukeren en klar oversikt over hvor i nettstedet de
 befinner seg.
 
@@ -55,7 +21,7 @@ befinner seg.
     \centering
     \includesvg[width=1.0\textwidth]{Images/Figures/sidehierarki}
     \caption{Sidehierarki -- navigasjonsstruktur fra forside til
-             innholdssider, med eksempel på brødsmulesti.}
+             innholdssider, med eksempel på breadcrumbs.}
     \label{fig:sidehierarki}
 \end{figure}
 
@@ -76,17 +42,71 @@ Hierarkiet er organisert som følger:
           (\texttt{/retningslinjer/...}) og statistikk.
 \end{enumerate}
 
-Brødsmulestien reflekterer dette hierarkiet direkte, slik som vist i
+Breadcrumbsen reflekterer dette hierarkiet direkte, slik som vist i
 eksempelet nederst i \autoref{fig:sidehierarki}:
 \textit{Forside › Forebygging, diagnose og behandling › Diabetes ›
 Nasjonal retningslinje for diabetes}.
 
 % ─────────────────────────────────────────────────────────────
-\subsection{Brødsmulesti}
+\subsection{Navigasjon på helsedirektoratet.no i dag}
+\label{sec:nav-i-dag}
+
+
+% TODO: Legg inn skjermbilde av dagens hd.no header/meny/brødsmulesti
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.9\textwidth]{Images/Screenshots/hd-nav-idag}
+%     \caption{Navigasjon på helsedirektoratet.no per 2025.}
+%     \label{fig:hd-nav-idag}
+% \end{figure}
+
+Navigasjonsstrukturen på helsedirektoratet.no har i dag følgende
+karakteristika:
+
+\begin{itemize}
+    \item \textbf{Breadcrumbs:} Sidene har breadcrumbs, men den er ikke
+          konsekvent synlig på alle innholdstyper og gir begrenset
+          kontekstuell støtte på dype sider.
+    \item \textbf{Meny:} En global meny gir tilgang til de ulike
+          fagområdene, men presentasjonen er flat og gir lite visuell
+          støtte til å forstå hierarki og innholdets omfang.
+    \item \textbf{Innholdssider:} Lange dokumenter (retningslinjer,
+          veiledere) mangler en lokal innholdsfortegnelse i sidemeny.
+          Brukeren må scrolle for å navigere i dokumentet.
+    \item \textbf{Søkeintegrasjon i navigasjon:} Søket er separert fra
+          navigasjonen, og resultatene gir lite kontekstuell filtrering
+          etter innholdstype.
+\end{itemize}
+
+Funn fra brukerundersøkelsene (se \autoref{sec:brukerundersokelser})
+understøtter at disse begrensningene skaper friksjon, særlig for
+fagpersoner som navigerer i komplekse dokumentstrukturer.
+
+% ─────────────────────────────────────────────────────────────
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Breadcrumbs}
 \label{sec:brodsmulesti}
 
 \subsubsection{Dagens løsning}
 \label{sec:brodsmulesti-idag}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Figures/Breadcrumbs helsedirektoratet.no.png}
+    \caption{Breadcrumbs på helsedirektoratet.no i dag på en temaside}
+    \label{fig:hd-breadcrumb-idag}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Figures/Breadcrumbs-side2.png}
+    \caption{Breadcrumbs på helsedirektoratet.no i dag på en underside av temasiden}
+    \label{fig:hd-breadcrumb-idag-underside}
+\end{figure}
+
 
 % TODO: Legg inn skjermbilde av breadcrumbs på hd.no
 % \begin{figure}[H]
@@ -97,11 +117,8 @@ Nasjonal retningslinje for diabetes}.
 %     \label{fig:hd-breadcrumb-idag}
 % \end{figure}
 
-Brødsmulestien på helsedirektoratet.no viser stien tilbake til forsiden,
-men har noen begrensninger: lange sidetitler avskjæres uten visuell
-tilbakemelding, og på sider med mer enn tre nivåer i hierarkiet kan stien
-bli uoversiktlig lang. Det finnes ingen funksjonalitet for å kollapse
-mellomliggende ledd ved svært dype stier.
+Breadcrumbsene på helsedirektoratet.no viser stien tilbake til forsiden,
+men har noen begrensninger. Breadcrumbsene relfekterer ikke antall klikk og tar med deloverskrifter som man er innom som i figur \ref{fig:hd-breadcrumb-idag} som har med "Forebygging og levevaner", så deretter når du klikker inn til alkoholloven vil breadcrumbsen bli helt kuttet og kun vise til forsiden som vist i figur \ref{fig:hd-breadcrumb-idag-underside}. Hvis man f.eks skulle søkt og klikt seg inn her ville man ikke hat sjangs til å vit hvor man var i hierarkiet....  De viser heller ikke nåverende posisjon i breadcrumbs... 
 
 \subsubsection{Vår løsning}
 \label{sec:brodsmulesti-var}
@@ -465,3 +482,84 @@ kapitler:
           \texttt{SidebarTree}-menyen, noe som forsterker
           plasseringsfølelsen i dokumenthierarkiet.
 \end{itemize}
+
+
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Universell utforming i navigasjonskomponentene}
+\label{sec:nav-wcag}
+
+Offentlige nettjenester er lovpålagt å følge WCAG~2.1~AA (se
+\autoref{sec:wcag-teori}). Helsedirektoratets tilgjengelighetserklæring
+erklærer delvis samsvar og peker på konkrete mangler i tastaturnavigasjon
+og ARIA-merking av interaktive elementer \cite{uustatus-helsedir}.
+Navigasjonskomponentene i prototypen adresserer disse punktene direkte.
+
+\paragraph{Hopplenke --- kriterium 2.4.1}
+Hopplenken er første fokuserbare element på siden og lar tastaturbrukere
+hoppe over gjentakende header og meny. Vi bruker \texttt{SkipLink} fra
+Digdir Designsystemet, den norske offentlige sektorens felles
+komponentbibliotek:
+
+\begin{minted}[fontsize=\small, frame=lines]{jsx}
+// AppLayout.tsx
+<SkipLink href="#main-content">Hopp til hovedinnhold</SkipLink>
+<AppHeader ... />
+<main id="main-content">
+  <Outlet />
+</main>
+\end{minted}
+
+\paragraph{WAI-ARIA combobox-mønster i søkefelt --- kriterium 4.1.2}
+Helsedirektoratets søkefelt har ingen ARIA-merking. \texttt{SearchForm}
+i prototypen implementerer det fulle WAI-ARIA \textit{combobox}-mønsteret
+slik at skjermlesere korrekt formidler søkefeltets tilstand og aktiv
+markering i forslagslisten. Forslagslisten støtter i tillegg fullstendig
+tastaturnavigasjon (kriterium 2.1.1):
+
+\begin{minted}[fontsize=\small, frame=lines]{jsx}
+// SearchForm.tsx
+<input
+  role="combobox"
+  aria-expanded={showSuggestions && suggestions.length > 0}
+  aria-controls={listboxId}
+  aria-activedescendant={
+    activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
+  }
+  aria-autocomplete="list"
+  aria-label="Søk"
+  onKeyDown={handleKeyDown}  // ArrowDown/Up, Enter, Escape
+/>
+\end{minted}
+
+\paragraph{Semantisk navigasjonsmarkering --- kriterium 4.1.2, 2.4.6}
+Alle navigasjonsregioner bruker \texttt{<nav>} med beskrivende
+\texttt{aria-label}, slik at skjermlesere kan tilby hurtignavigasjon
+mellom landmark-regioner. Aktiv side markeres programmatisk med
+\texttt{aria-current}, og knapper for kapittelpaginering har eksplisitt
+\texttt{aria-label} med kapittelnummer:
+
+\begin{minted}[fontsize=\small, frame=lines]{jsx}
+// SidebarTree.tsx
+<nav aria-label="Innholdssider">
+  <button aria-current={isOverviewActive ? "page" : undefined}>
+    Oversikt
+  </button>
+</nav>
+
+// PageContent.tsx
+<nav aria-label="Navigasjon mellom kapitler">
+  <button aria-label={`Gå til forrige kapittel ${previousPage.numbering}`}>
+    ...
+  </button>
+  <button aria-label={`Gå til neste kapittel ${nextPage.numbering}`}>
+    ...
+  </button>
+</nav>
+\end{minted}
+
+Dekorative ikoner og skilletegn er konsekvent merket med
+\texttt{aria-hidden="true"} for å skjules fra skjermlesere (kriterium
+1.1.1), og primærfargen \texttt{\#025169} fra Digdir Designsystemet
+overstiger AA-kravet på 4,5:1 i fargekontrast mot hvit bakgrunn
+(kriterium 1.4.3).
