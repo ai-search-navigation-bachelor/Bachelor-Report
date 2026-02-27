@@ -44,7 +44,7 @@ og temautdrag. I prototypen brukes HAPI på to måter:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Images/vm-topologi-skyhiigh.png}
+    \includegraphics[width=\textwidth]{Images/helsedirektoratet.no/vm-netverk-graph.png}
     \caption{Topologien over hvordan VM-en er satt opp i SkyHigh på NTNUs globale nettverk.}
     \label{fig:vm-setup}
 \end{figure}
@@ -182,3 +182,5 @@ Alle tre arbeidsflytene kjøres på en selvhostet GitHub Actions-runner
 (\texttt{self-hosted, prod}) som er installert direkte på VM-en. Dette gjør at
 utrulling skjer uten å sende kode over nettverket -- runneren har allerede tilgang
 til det lokale filsystemet og Docker-miljøet på maskinen.
+
+\subsubsection{Github runner hostet på VM}
