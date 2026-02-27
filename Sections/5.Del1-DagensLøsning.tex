@@ -1,98 +1,116 @@
 \section{Kartlegging av dagens løsning}
+\label{sec:baseline}
 
-\subsection{Brukerundersøkelser fra helsedirektoratet.no}
+For å forstå de reelle utfordringene knyttet til søk og navigasjon på helsedirektoratet.no, ble kartleggingen av dagens løsning basert på to komplementære datakilder: brukerundersøkelser og -data gjort tilgjengelig av Helsedirektoratet, samt en egenutviklet spørreundersøkelse distribuert i samarbeid med Helsedirektoratet. Dette kapittelet presenterer funn fra disse kildene og danner det empiriske grunnlaget for prototypens designvalg og evalueringskriterier.
 
+\subsection{Brukerundersøkelser fra Helsedirektoratet}
+\label{sec:brukerundersokelser}
 
+Helsedirektoratet stilte til rådighet data fra en intern brukerundersøkelse gjennomført på helsedirektoratet.no i perioden 15.–29.\ september 2025. Undersøkelsen ble gjennomført ved hjelp av verktøyet Skyra, som lar besøkende besvare korte spørreskjema direkte på nettsiden underveis i besøket. Totalt besvarte 3\,747 respondenter undersøkelsen, noe som gir en svarrate på 2,9~\%. En svarrate mellom 1 og 5~\% regnes som normalt for denne typen nettstedsundersøkelse.
 
-\subsubsection{Oppsummering av data (pp/excel) /brukerundersøkelser}
+\subsubsection{Undersøkelsens innhold og gjennomføring}
+\label{sec:skyra-undersokelse}
 
-Vi fikk tidligere brukerundersøkelser av helsedirektoratet fra perioden 15.– 29.september 2025, med totalt 3747 respondenter. Denne ble lansert på skyra som var vår originale plan for spørreudnersøkelsen vår. Svarraten er på 2,9 \% (alt mellom 1 og 5 \% er normalt for denne typen undersøkelse)
-
-
-\begin{figure}[H]
-    \centering
-    \includesvg[width=1.0\textwidth]{Images/spørreundersøkelse/Skyra-undersøkelse}
-    \caption{Hvordan undersøkelsen ville sett ut på helsedirektoratet.no lansert med skyra}
-    \label{fig:sidehierarki}
-\end{figure}
-
-Denne spørreundersøkelsen inneholdt følgende spørsmål:
+Som vist i figur~\ref{fig:skyra-undersokelse}, ble undersøkelsen presentert som et kort skjema til brukerne underveis i besøket på helsedirektoratet.no. Skjemaet dekket åtte spørsmål:
 
 \begin{enumerate}
     \item Jeg besøker nettstedet som?
     \item Hva kom du hit for å gjøre?
     \item Fikk du gjort det du skulle?
-    \item Hvor enkelt var det å gjøre det du kom for/hvorfor fikk du ikke gjort det du skulle?
+    \item Hvor enkelt var det å gjøre det du kom for / hvorfor fikk du ikke gjort det du skulle?
     \item Var innholdet oppdatert?
     \item Hvor høy faglig kvalitet har innholdet?
     \item Var språket enkelt å forstå?
     \item Hvis vi skulle forbedre én ting på nettsiden, hva ville det vært?
 \end{enumerate}
 
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/spørreundersøkelse/Skyra-undersøkelse}
+    \caption{Skyra-undersøkelsen slik den ble presentert for besøkende på helsedirektoratet.no i september 2025.}
+    \label{fig:skyra-undersokelse}
+\end{figure}
 
-Her ser man oversikten over hvem som besøker nettsiden:
+\subsubsection{Hvem besøker helsedirektoratet.no?}
+\label{sec:hvem-besoker}
+
+Det første spørsmålet kartla hvilken rolle respondentene hadde som besøkende. Figur~\ref{fig:undersokelse-hvem} viser fordelingen av besøkskategorier og bekrefter at nettstedet betjener en sammensatt brukergruppe. Helsepersonell og offentlig ansatte utgjør de dominerende segmentene, etterfulgt av privatpersoner og studenter. Dette understreker behovet for at innhold og navigasjonsstruktur må fungere godt på tvers av brukergrupper med svært ulike forutsetninger og informasjonsbehov.
 
 \begin{figure}[H]
     \centering
     \includesvg[width=1.0\textwidth]{Images/spørreundersøkelse/undersøkelse-graf-hvem}
-    \caption{svar på undersøkelsen...}
-    \label{fig:sidehierarki}
+    \caption{Fordelingen av respondentenes besøkskategori i Skyra-undersøkelsen (september 2025).}
+    \label{fig:undersokelse-hvem}
 \end{figure}
 
-Her ser man utviklingen over tid grunnet i data fra tidligere spørrundersøkelser
+\subsubsection{Utvikling over tid}
+\label{sec:utvikling-over-tid}
+
+Helsedirektoratet har gjennomført tilsvarende brukerundersøkelser over flere perioder, noe som gjør det mulig å identifisere trender i brukertilfredshet og besøksmønstre over tid. Figur~\ref{fig:undersokelse-over-tid} oppsummerer denne utviklingen og viser at enkelte utfordringer er vedvarende, særlig knyttet til søk, navigasjon og innholdsoppdatering. At de samme problemstillingene gjentar seg på tvers av undersøkelsesperioder, styrker validiteten av funnene og underbygger behovet for systematiske forbedringer.
 
 \begin{figure}[H]
     \centering
     \includesvg[width=1.0\textwidth]{Images/spørreundersøkelse/undersøkelse-statistikk-over-tid}
-    \caption{Utviklingen over tid...}
-    \label{fig:sidehierarki}
+    \caption{Utvikling i brukertilfredshetsdata basert på Helsedirektoratets løpende brukerundersøkelser over flere perioder.}
+    \label{fig:undersokelse-over-tid}
 \end{figure}
 
-tilbakemeldinger og forbedring
+\subsection{Egenutviklet spørreundersøkelse}
+\label{sec:egen-undersokelse}
 
-svar på siste spørsmål resulterte i dette kort oppsummert:
-KOmmentarer fra brukere
+I tillegg til å benytte Helsedirektoratets eksisterende data, gjennomførte prosjektgruppen en egen spørreundersøkelse for å innhente supplerende brukerinnsikt. Opprinnelig var planen å distribuere undersøkelsen via Skyra, på samme måte som Helsedirektoratets egne undersøkelser. Dette lot seg imidlertid ikke gjennomføre innenfor prosjektets tidsramme, og undersøkelsen ble i stedet distribuert digitalt i samarbeid med Helsedirektoratet gjennom virksomhetens interne kommunikasjonskanaler. Figur~\ref{fig:christine-promotering} viser et eksempel på hvordan undersøkelsen ble delt internt, der en representant fra Helsedirektoratet oppfordret ansatte til å bidra.
 
-Kommentarer om gamle artikler som dukker opp i Google-søk
-Forslag om å skrive tydelig om det blir mulig å se opptak av arrangementer
-Oppfordring til å fortsette å spre kunnskap om forebyggingKommentar om at lenker ikke virkerKommentar om at innholdet kan organiseres bedre, selv for ansatte i Helsedirektoratet
-Ønske om oppdaterte opplysninger
-Ønske om mer folkelig språk for vanlige brukere
-Ønske om raskere tilgang til resultater og enklere søk
-Noen opplevde det som vanskelig å finne relevant lovinformasjon, spesielt i sammenheng med søknader og rettigheter
-Flere brukere uttrykte at Helsedirektoratets gjennomgang av lovverket er nyttig, men burde vært bedre kjent
-Kommentarer om at det burde være enklere å finne frem
-Ønske om enklere kontakt med et menneske ved behov
-Kommentarer om at veiledere kunne vært mer konkrete
-Behov for oppdatert informasjon og tydelig publiseringsdato
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{Images/spørreundersøkelse/christine-undersøkelse}
+    \caption{Intern deling av prosjektgruppens spørreundersøkelse via Helsedirektoratets kommunikasjonskanaler.}
+    \label{fig:christine-promotering}
+\end{figure}
 
-Gjengangere blant svarene på dette spørsmålet:
-Bedre søk og navigasjon
-Enklere språk
-Mer visuelt innhold
-Rette opp i lenker som ikke fungerer
-Enklere å se om noe er oppdatert eller ikke
+\subsection{Brukertilbakemeldinger og sentrale funn}
+\label{sec:brukertilbakemeldinger}
 
-\paragraph{Anbefalte tiltak – overordnet nivå:}
+Det siste spørsmålet i Skyra-undersøkelsen – «Hvis vi skulle forbedre én ting på nettsiden, hva ville det vært?» – ga et rikt utvalg åpne tilbakemeldinger fra brukerne. Disse kan oppsummeres i følgende gjengangere:
 
-Bedre søk og navigasjon 
-Arbeid med å forbedre internsøket på helsedir.no pågår og fortsetter i 2026.
+\begin{itemize}
+    \item Bedre søk og navigasjon
+    \item Enklere språk
+    \item Mer visuelt innhold
+    \item Rette opp i lenker som ikke fungerer
+    \item Enklere å se om innhold er oppdatert eller ikke
+\end{itemize}
 
-Enklere språk 
-Kommunikasjonsavdelingen driver et klarspråkprosjekt hvor innholdsrådgivere fra redaksjonen deltar.
+Blant de mer konkrete tilbakemeldingene fra enkeltbrukere fremkom blant annet:
 
-Mer visuelt innhold 
-Arbeid med designsystemet pågår, og flere prosjekter drar inn visuelle elementer i løsningene.
+\begin{itemize}
+    \item Kommentarer om at gamle artikler dukker opp i Google-søk uten å være oppdatert
+    \item Forslag om å tydeliggjøre om det er mulig å se opptak av arrangementer
+    \item Ønske om raskere tilgang til resultater og enklere søk
+    \item Kommentarer om at innholdet kan organiseres bedre, selv for ansatte i Helsedirektoratet
+    \item Behov for oppdatert informasjon med tydelig publiseringsdato
+    \item Ønske om mer folkelig språk tilpasset vanlige brukere
+    \item Kommentarer om at lenker ikke fungerer
+    \item Ønske om enklere kontakt med en fagperson ved behov
+    \item Tilbakemeldinger om at veiledere kunne vært mer konkrete
+    \item Opplevelse av at det er vanskelig å finne relevant lovinformasjon, spesielt knyttet til søknader og rettigheter
+    \item Etterspørsel etter bedre tilgjengelighet til Helsedirektoratets gjennomganger av lovverket
+\end{itemize}
 
-Rette opp i lenker som ikke fungerer 
-Redaksjonen bruker analyseverktøy for å identifisere og fikse lenke- og UU-feil jevnlig, slik at feil ikke blir liggende over tid.
+\subsection{Anbefalte tiltak}
+\label{sec:anbefalte-tiltak}
 
-Enklere å se om noe er oppdatert eller ikke 
-Innsiktsfase for å forbedre løsning for «versjonshistorikk», «endringsbeskrivelser» og «dato for siste faglige endring» sendes inn til prioriteringsrådet.
+Basert på funnene fra brukerundersøkelsene identifiserte Helsedirektoratet følgende overordnede forbedringsområder og pågående tiltak:
 
+\begin{description}
+    \item[Bedre søk og navigasjon] Arbeid med å forbedre internsøket på helsedir.no pågår og fortsetter inn i 2026.
 
-struktur og oversikt over vår løsning.
+    \item[Enklere språk] Kommunikasjonsavdelingen driver et klarspråkprosjekt der innholdsrådgivere fra redaksjonen deltar aktivt.
 
-\begin{lstlisting}[language=Python, caption={Example script}, label={lst:example}]
-print("Hello, world!")
-\end{lstlisting}
+    \item[Mer visuelt innhold] Arbeid med designsystemet pågår, og flere prosjekter inkorporerer visuelle elementer i løsningene.
+
+    \item[Rette opp i lenker som ikke fungerer] Redaksjonen benytter analyseverktøy for å identifisere og utbedre lenke- og universell utforming-feil jevnlig, slik at feil ikke blir liggende over tid.
+
+    \item[Enklere å se om innhold er oppdatert] Det er igangsatt en innsiktsfase for å forbedre løsningen for versjonshistorikk, endringsbeskrivelser og dato for siste faglige endring. Forslaget er sendt inn til prioriteringsrådet.
+\end{description}
+
+Disse funnene er direkte relevante for prosjektets designvalg og legger grunnlaget for hvilke forbedringer som prioriteres i prototypen. Særlig utfordringene knyttet til søk og navigasjon bekrefter prosjektets valgte fokusområde og understreker behovet for en KI-støttet tilnærming.
