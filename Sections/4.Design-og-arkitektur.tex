@@ -1,5 +1,16 @@
 \section{Design og arkitektur}
 
+
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.2\textwidth]{Images/frontendTech}
+    \caption{ Oversikt over frontend-arkitekturen med teknologier fordelt i lag.}
+    \label{fig:frontend-tech-stack}
+\end{figure}
+
+
+
 Dette kapittelet beskriver det tekniske oppsettet av prototypen -- hvilke teknologier
 som er valgt, hvordan infrastrukturen er organisert, og hvordan endringer rulles ut
 automatisk. Selve søke- og navigasjonsløsningene som er bygget oppå denne arkitekturen
@@ -38,7 +49,6 @@ og temautdrag. I prototypen brukes HAPI på to måter:
         API-nøkkelen ikke eksponeres i nettleseren.
 \end{itemize}
 
-%%%%
 \subsection{Infrastruktur}
 
 Prototypen er distribuert på en virtuell maskin i NTNUs OpenStack-baserte
@@ -51,68 +61,27 @@ database, samt bruken av Nginx som reverse proxy.
 \subsubsection{Nettverk og tilgjengelighet}
 
 Den virtuelle maskinen er plassert i et privat nettverk
-(\texttt{192.168.0.0/24}) opprettet i OpenStack. Nettverket er koblet til
-det eksterne nettverket \textit{ntnu-global} via en virtuell ruter. En
-flytende IP-adresse (\texttt{129.241.150.141}) er tilordnet instansen og
-mappet til dens interne IP-adresse. Dette gjør serveren tilgjengelig fra
-internett uten behov for VPN.
+(\texttt{192.168.0.0/24}) opprettet i OpenStack. Nettverket er koblet
+til det eksterne nettverket \textit{ntnu-global} via en virtuell ruter.
+Instansen har intern IP-adresse \texttt{192.168.0.173} og er tilordnet
+en flytende IP-adresse (\texttt{129.241.150.141}), som gjør den
+tilgjengelig fra internett.
 
-Arkitekturen følger et klassisk skyoppsett der trafikk går fra internett
-til en offentlig IP-adresse, videre gjennom en virtuell ruter og inn til
-en instans i et privat subnett. Figuren tilhørende denne seksjonen viser
-denne sammenhengen mellom internett, OpenStack-nettverk, ruter og instans.
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/Figures/network-infrastructure}
+    \caption{Trafikkflyt fra URL til virtuell maskin i OpenStack, inkludert
+    DNS-oppløsning, flytende IP-adresse og ruting gjennom privat subnett.}
+    \label{fig:infra-setup}
+\end{figure}
 
-\subsubsection{Virtuell maskin og lagring}
-
-Løsningen kjøres på én virtuell maskin med Ubuntu Server 24.04 som
-operativsystem. Instansen er konfigurert med 6 virtuelle CPU-kjerner og
-8~GB RAM. I tillegg er det tilknyttet et separat SSD-basert blokkvolum
-på 256~GB for vedvarende lagring av applikasjonsdata og modeller.
-
-VM-en fungerer som applikasjonsserver og kjører både webserver,
-backend-applikasjon og database (i containere). Det er ikke benyttet
-flere instanser, lastbalansering eller høytilgjengelighetsmekanismer.
-Oppsettet representerer dermed en én-nodes arkitektur tilpasset
-utvikling og demonstrasjon.
-
-Tilgang til maskinen skjer via SSH med nøkkelbasert autentisering.
-Passordinnlogging er deaktivert, og kun forhåndsautoriserte offentlige
-nøkler gir tilgang.
-
-\subsubsection{Containerisering av backend og database}
-
-Backend-applikasjonen og databasen kjøres i Docker-containere som
-administreres med Docker Compose. Databasen benytter MySQL~8 og kjører
-i en egen container med vedvarende lagring gjennom et navngitt Docker-volum.
-Databasen initialiseres automatisk ved første oppstart gjennom et
-SQL-oppsettskript.
-
-Backend-applikasjonen bygges fra prosjektets Dockerfile basert på
-\texttt{python:3.11-slim} og kjøres med Uvicorn. Applikasjonen eksponerer
-et \texttt{/health}-endepunkt som benyttes både av Docker og av eksterne
-overvåkingsmekanismer for å verifisere at tjenesten er operativ.
-Containeren starter først når databasen er bekreftet tilgjengelig.
-
-Frontend kjøres ikke i container. Den bygges lokalt og distribueres som
-statiske filer til \texttt{/var/www/app} på VM-en. Dette reduserer
-kompleksiteten i deploy-prosessen og gjør at Nginx kan servere frontend
-direkte.
-
-\subsubsection{Nginx som reverse proxy}
-
-Nginx er installert direkte på VM-en og fungerer som inngangspunkt for
-all ekstern trafikk. HTTPS termineres i Nginx ved bruk av TLS-sertifikater
-utstedt av Let's Encrypt. All HTTP-trafikk omdirigeres automatisk til HTTPS.
-
-Nginx serverer frontend som statiske filer fra
-\texttt{/var/www/app}, mens forespørsler til stien \texttt{/api}
-videresendes til backend-containeren på \texttt{127.0.0.1:8000}.
-Kommunikasjonen mellom Nginx og backend foregår internt på VM-en via HTTP.
-
-Denne arkitekturen gjør at frontend og backend fremstår som én samlet
-tjeneste for klienten, samtidig som backend isoleres bak reverse proxyen.
-Løsningen unngår dermed CORS-relaterte problemstillinger og sentraliserer
-håndtering av TLS og sikkerhetsinnstillinger.
+Som vist i figur~\ref{fig:infra-setup} løses domenenavnet først
+til den flytende IP-adressen via DNS. Deretter sendes HTTPS-trafikken
+til det eksterne nettverket, videre gjennom den virtuelle ruteren
+og inn til instansen i det private subnettet. Denne
+arkitekturen følger et klassisk skyoppsett hvor instanser isoleres i
+private nettverk, samtidig som de kan eksponeres selektivt mot
+offentlige nettverk~\cite{nist-cloud}.
 
 \subsubsection{Konfigurasjon i OpenStack}
 
@@ -125,7 +94,100 @@ security group som tillater innkommende trafikk på portene 22 (SSH),
 Portene 3306 og 8000 er åpne for å muliggjøre ekstern administrasjon
 og testing i utviklingsfasen. I en produksjonssetting burde disse vært
 begrenset til interne nettverk eller fjernet helt for å redusere
-angrepsflaten.
+muligheter for eksterne angrep.
+
+\subsubsection{Virtuell maskin og lagring}
+
+Løsningen kjøres på én virtuell maskin med Ubuntu Server 24.04 som
+operativsystem. Instansen er konfigurert med 6 virtuelle CPU-kjerner og
+8~GB RAM. I tillegg er det tilknyttet et separat SSD-basert blokkvolum
+på 256~GB for vedvarende lagring av databasedata og modeller. Valget om å benytte én enkelt virtuell maskin fremfor en distribuert arkitektur er gjort med hensyn til prosjektets omfang og kompleksitet. For en prototype uten krav til høy tilgjengelighet eller horisontal skalering er en en-nodes arkitektur tilstrekkelig og reduserer driftsmessig kompleksitet.
+
+VM-en fungerer som applikasjonsserver og kjører både webserver,
+backend-applikasjon og database (i containere). Det er ikke benyttet
+flere instanser, loadbalancing eller høytilgjengelighetsmekanismer.
+Oppsettet representerer dermed en én-nodes arkitektur tilpasset
+utvikling og demonstrasjon.
+
+Tilgang til maskinen skjer via SSH med nøkkelbasert autentisering.
+Passordinnlogging er deaktivert, og kun forhåndsautoriserte offentlige
+nøkler gir tilgang.
+
+\subsubsection{Containerisering}
+
+Containerisering med Docker ble valgt for å isolere applikasjonens
+avhengigheter fra vertsmaskinen og sikre reproduserbar utrulling på
+tvers av miljøer. Containere muliggjør lettvekts virtualisering basert
+på operativsystemnivå, noe som gir lavere ressursbruk sammenlignet med
+tradisjonelle virtuelle maskiner~\cite{pahl2015containers}.
+
+Backend-applikasjonen og databasen kjøres derfor i separate
+Docker-containere administrert med Docker Compose.
+
+\subsubsection{Tjenestestruktur og oppstart}
+
+Databasen benytter MySQL~8 og kjører i en egen container med vedvarende
+lagring gjennom et navngitt Docker-volum. Databasen initialiseres
+automatisk ved første oppstart gjennom et SQL-oppsettskript.
+
+Databasecontaineren er konfigurert med en helsesjekk basert på
+\texttt{mysqladmin ping}~\cite{docker-healthcheck}, som benyttes for
+å verifisere at databasen er tilgjengelig før andre tjenester starter.
+Restart-policy er satt til \texttt{unless-stopped} for å sikre automatisk
+gjenoppretting ved uventede feil.
+
+Backend-applikasjonen bygges fra prosjektets Dockerfile basert på
+\texttt{python:3.11-slim} og kjøres med Uvicorn. Applikasjonen
+eksponerer et \texttt{/health}-endepunkt som benyttes både av Docker
+og av eksterne overvåkingsmekanismer.
+
+Gjennom \texttt{depends\_on}-konfigurasjon i Docker Compose starter
+ikke backend før databasen er bekreftet som \textit{healthy}~\cite{docker-compose-depends}.
+Dette sikrer korrekt oppstartsrekkefølge og reduserer risiko for
+feilsituasjoner ved omstart.
+
+\subsubsection{Frontend-distribusjon}
+
+Frontend kjøres ikke i container. Den bygges lokalt og distribueres
+som statiske filer til \texttt{/var/www/app} på VM-en.
+Dette reduserer kompleksiteten i deploy-prosessen og gjør at
+Nginx kan servere frontend direkte uten mellomliggende applikasjonslag.
+
+\subsubsection{Nginx som reverse proxy}
+
+Nginx er installert direkte på VM-en og fungerer som inngangspunkt for
+all ekstern trafikk. Bruken av en reverse proxy muliggjør sentralisert håndtering av
+TLS-terminering, trafikkruting og tilgangskontroll.
+En slik arkitektur reduserer direkte eksponering av backend-tjenester
+mot internett og er et etablert mønster i moderne webapplikasjoner~\cite{cloudflare-reverse-proxy}.
+
+HTTPS termineres i Nginx ved bruk av TLS-sertifikater
+utstedt av Let's Encrypt. All HTTP-trafikk omdirigeres automatisk til HTTPS. TLS-terminering i reverse proxyen innebærer at kryptert trafikk
+dekrypteres før den videresendes internt i systemet. Dette forenkler
+sertifikathåndtering og reduserer kompleksitet i applikasjonslaget.
+TLS-protokollen er en standard for sikker webkommunikasjon~\cite{rfc8446}.
+
+Nginx serverer frontend som statiske filer fra
+\texttt{/var/www/app}, mens forespørsler til stien \texttt{/api}
+videresendes til backend-containeren på \texttt{127.0.0.1:8000}.
+Kommunikasjonen mellom Nginx og backend foregår internt på VM-en via HTTP.
+
+Denne arkitekturen gjør at frontend og backend fremstår som én samlet
+tjeneste for klienten, samtidig som backend isoleres bak reverse proxyen.
+Løsningen unngår dermed CORS-relaterte problemstillinger og sentraliserer
+håndtering av TLS og sikkerhetsinnstillinger. 
+
+Som vist i figur~\ref{fig:vm-internal} håndteres all ekstern trafikk
+først av Nginx før den enten serveres som statiske filer eller
+videresendes til backend-containeren, som igjen kommuniserer med
+databasen via et internt Docker-nettverk.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/Figures/VM-internal}
+    \caption{Intern struktur på VM-en med Nginx, Docker-containere og CI/CD-komponenter.}
+    \label{fig:vm-internal}
+\end{figure}
 
 \subsubsection{GitHub-integrasjon og CI/CD}
 
@@ -137,50 +199,6 @@ slik at oppdatering av containere kan automatiseres.
 Dette gir en enkel CI/CD-prosess der kodeendringer kan deployeres uten
 manuell SSH-innlogging. Detaljer om workflow-konfigurasjon og
 deploy-strategi beskrives i et senere kapittel.
-%%%%%
-\subsection{Infrastruktur}
-
-\subsubsection{Virtuell maskin}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{Images/helsedirektoratet.no/vm-netverk-graph.png}
-    \caption{Topologien over hvordan VM-en er satt opp i SkyHigh på NTNUs globale nettverk.}
-    \label{fig:vm-setup}
-\end{figure}
-
-Figur~\ref{fig:vm-setup} viser hvordan prototypen er kjørt på en virtuell maskin (VM)
-med Ubuntu Linux i SkyHigh, NTNUs OpenStack-baserte skytjeneste. VM-en er koblet til
-NTNUs globale nettverk slik at eksterne parter kan teste løsningene uten VPN.
-Prototypen vil være tilgjengelig t.o.m. 21. juni.
-
-\subsubsection{Containerisering med Docker}
-
-Alle tjenester på VM-en kjøres som \hyperlink{ord:docker}{Docker}-containere~\cite{docker-docs}
-og styres med \hyperlink{ord:docker-compose}{Docker~Compose}. Konfigurasjonen i
-\texttt{docker-compose.yml} definerer to tjenester:
-
-\begin{itemize}
-    \item \textbf{db} -- MySQL~8-\hyperlink{ord:container}{container} med et vedvarende
-        datavolum. Databasen initialiseres automatisk fra et SQL-oppsettskript ved første
-        oppstart.
-    \item \textbf{backend} -- Applikasjonscontainer bygget fra prosjektets
-        \texttt{Dockerfile}. Kjører FastAPI via Uvicorn-serveren og starter
-        ikke før \texttt{db}-containeren er bekreftet frisk (\textit{healthy}).
-\end{itemize}
-
-Begge containerne er konfigurert med helsesjekker. Backend eksponerer et
-\texttt{/health}-endepunkt som Docker bruker til å bekrefte at tjenesten er
-klar til å ta imot forespørsler.
-
-\subsubsection{Nginx som reverse proxy}
-
-På VM-en fungerer \hyperlink{ord:nginx}{Nginx}~\cite{nginx-docs} som
-\hyperlink{ord:reverse-proxy}{reverse proxy} foran applikasjonen.
-Frontend serveres statisk fra \texttt{/var/www/app}, mens alle forespørsler til stien
-\texttt{/api} videresendes til backend-containeren på port~8000. Denne oppdelingen
-gjør at frontend og backend fremstår som én tjeneste for nettleseren. HTTPS er aktivert
-via NTNUs domene.
 
 \subsection{CI/CD med GitHub Actions}
 
