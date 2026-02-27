@@ -38,6 +38,106 @@ og temautdrag. I prototypen brukes HAPI på to måter:
         API-nøkkelen ikke eksponeres i nettleseren.
 \end{itemize}
 
+%%%%
+\subsection{Infrastruktur}
+
+Prototypen er distribuert på en virtuell maskin i NTNUs OpenStack-baserte
+skytjeneste (SkyHigh). Løsningen er tilgjengelig over internett via domenet
+\texttt{https://vm.idatg2901-v26-helsdir.iaas.iik.ntnu.no/}. Dette kapittelet
+beskriver den underliggende infrastrukturen, inkludert nettverkstopologi,
+konfigurasjon av den virtuelle maskinen, containerisering av backend og
+database, samt bruken av Nginx som reverse proxy.
+
+\subsubsection{Nettverk og tilgjengelighet}
+
+Den virtuelle maskinen er plassert i et privat nettverk
+(\texttt{192.168.0.0/24}) opprettet i OpenStack. Nettverket er koblet til
+det eksterne nettverket \textit{ntnu-global} via en virtuell ruter. En
+flytende IP-adresse (\texttt{129.241.150.141}) er tilordnet instansen og
+mappet til dens interne IP-adresse. Dette gjør serveren tilgjengelig fra
+internett uten behov for VPN.
+
+Arkitekturen følger et klassisk skyoppsett der trafikk går fra internett
+til en offentlig IP-adresse, videre gjennom en virtuell ruter og inn til
+en instans i et privat subnett. Figuren tilhørende denne seksjonen viser
+denne sammenhengen mellom internett, OpenStack-nettverk, ruter og instans.
+
+\subsubsection{Virtuell maskin og lagring}
+
+Løsningen kjøres på én virtuell maskin med Ubuntu Server 24.04 som
+operativsystem. Instansen er konfigurert med 6 virtuelle CPU-kjerner og
+8~GB RAM. I tillegg er det tilknyttet et separat SSD-basert blokkvolum
+på 256~GB for vedvarende lagring av applikasjonsdata og modeller.
+
+VM-en fungerer som applikasjonsserver og kjører både webserver,
+backend-applikasjon og database (i containere). Det er ikke benyttet
+flere instanser, lastbalansering eller høytilgjengelighetsmekanismer.
+Oppsettet representerer dermed en én-nodes arkitektur tilpasset
+utvikling og demonstrasjon.
+
+Tilgang til maskinen skjer via SSH med nøkkelbasert autentisering.
+Passordinnlogging er deaktivert, og kun forhåndsautoriserte offentlige
+nøkler gir tilgang.
+
+\subsubsection{Containerisering av backend og database}
+
+Backend-applikasjonen og databasen kjøres i Docker-containere som
+administreres med Docker Compose. Databasen benytter MySQL~8 og kjører
+i en egen container med vedvarende lagring gjennom et navngitt Docker-volum.
+Databasen initialiseres automatisk ved første oppstart gjennom et
+SQL-oppsettskript.
+
+Backend-applikasjonen bygges fra prosjektets Dockerfile basert på
+\texttt{python:3.11-slim} og kjøres med Uvicorn. Applikasjonen eksponerer
+et \texttt{/health}-endepunkt som benyttes både av Docker og av eksterne
+overvåkingsmekanismer for å verifisere at tjenesten er operativ.
+Containeren starter først når databasen er bekreftet tilgjengelig.
+
+Frontend kjøres ikke i container. Den bygges lokalt og distribueres som
+statiske filer til \texttt{/var/www/app} på VM-en. Dette reduserer
+kompleksiteten i deploy-prosessen og gjør at Nginx kan servere frontend
+direkte.
+
+\subsubsection{Nginx som reverse proxy}
+
+Nginx er installert direkte på VM-en og fungerer som inngangspunkt for
+all ekstern trafikk. HTTPS termineres i Nginx ved bruk av TLS-sertifikater
+utstedt av Let's Encrypt. All HTTP-trafikk omdirigeres automatisk til HTTPS.
+
+Nginx serverer frontend som statiske filer fra
+\texttt{/var/www/app}, mens forespørsler til stien \texttt{/api}
+videresendes til backend-containeren på \texttt{127.0.0.1:8000}.
+Kommunikasjonen mellom Nginx og backend foregår internt på VM-en via HTTP.
+
+Denne arkitekturen gjør at frontend og backend fremstår som én samlet
+tjeneste for klienten, samtidig som backend isoleres bak reverse proxyen.
+Løsningen unngår dermed CORS-relaterte problemstillinger og sentraliserer
+håndtering av TLS og sikkerhetsinnstillinger.
+
+\subsubsection{Konfigurasjon i OpenStack}
+
+For å gjøre løsningen tilgjengelig fra internett er det konfigurert et
+privat nettverk, en virtuell ruter mot \textit{ntnu-global} og en
+flytende IP-adresse i OpenStack. Instansen er tilknyttet en egen
+security group som tillater innkommende trafikk på portene 22 (SSH),
+80 (HTTP), 443 (HTTPS), 3306 (MySQL) og 8000 (backend).
+
+Portene 3306 og 8000 er åpne for å muliggjøre ekstern administrasjon
+og testing i utviklingsfasen. I en produksjonssetting burde disse vært
+begrenset til interne nettverk eller fjernet helt for å redusere
+angrepsflaten.
+
+\subsubsection{GitHub-integrasjon og CI/CD}
+
+VM-en er konfigurert med en self-hosted GitHub Actions runner som muliggjør
+automatisk bygging og utrulling av backend ved push til repositoryet.
+Runneren kjører direkte på VM-en og har tilgang til Docker-miljøet,
+slik at oppdatering av containere kan automatiseres.
+
+Dette gir en enkel CI/CD-prosess der kodeendringer kan deployeres uten
+manuell SSH-innlogging. Detaljer om workflow-konfigurasjon og
+deploy-strategi beskrives i et senere kapittel.
+%%%%%
 \subsection{Infrastruktur}
 
 \subsubsection{Virtuell maskin}
