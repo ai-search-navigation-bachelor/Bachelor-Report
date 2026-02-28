@@ -40,18 +40,48 @@ og temautdrag. I prototypen brukes HAPI på to måter:
         API-nøkkelen ikke eksponeres i nettleseren.
 \end{itemize}
 
-\subsection{Frontend?}
+\subsection{Frontend}
 
 \begin{figure}[H]
     \centering
     \includesvg[width=1.2\textwidth]{Images/frontendTech}
-    \caption{ Oversikt over frontend-arkitekturen med teknologier fordelt i lag.}
+    \caption{Oversikt over frontend-arkitekturen med teknologier fordelt i lag.}
     \label{fig:frontend-tech-stack}
 \end{figure}
 
-\subsection{Backend?}
+Figur~\ref{fig:frontend-tech-stack} viser frontenden organisert i funksjonelle lag.
+Komponentlaget er bygget med React og følger Digdirs designsystem, som er standard for
+digitale tjenester i norsk offentlig sektor. Dette sikrer visuell konsistens og ivaretar
+tilgjengelighetskrav uten at teamet selv måtte designe et grunnleggende komponentsett.
 
-%Figur og forklaernede tekst om backend teknologi / implementasjon...
+Navigasjon mellom sider håndteres av React~Router, som gir klient-side ruting uten full
+sideopplasting. Data fra backend-APIet hentes og caches med TanStack~Query, som
+automatisk håndterer bakgrunnsoppdatering og skiller tydelig mellom server-state og
+UI-logikk. Global klient-state som søke-ID og siste spørring persisteres på tvers av
+ruter med Zustand. HTML-innhold fra HAPI saniteres av DOMPurify før rendering for
+å hindre XSS.
+
+\subsection{Backend}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{Images/Figures/backend-figur}
+    \caption{Oversikt over backend-arkitekturen med teknologier fordelt i lag.}
+    \label{fig:backend-tech-stack}
+\end{figure}
+
+Figur~\ref{fig:backend-tech-stack} viser backend-arkitekturen organisert etter en lagdelt
+struktur med tydelig separasjon av ansvar. FastAPI definerer HTTP-endepunkter og genererer
+automatisk API-dokumentasjon (OpenAPI/Swagger), noe som forenkler integrasjon og testing.
+
+Innkommende forespørsler koordineres i et controller-lag som delegerer til riktige services.
+Service-laget inneholder forretningslogikken -- blant annet orkestrering av hybrid søk og
+proxy-kall mot HAPI. Et eget repository-lag abstrahere all databasetilgang mot MySQL, slik
+at SQL-logikken holdes adskilt fra resten av koden.
+
+Denne arkitekturen ble valgt fordi den gir god testbarhet og gjør det enkelt å bytte ut
+enkeltkomponenter -- for eksempel søkemodell eller database -- uten at det påvirker
+resten av systemet.
 
 
 
@@ -111,16 +141,12 @@ muligheter for eksterne angrep.
 
 \subsubsection{Virtuell maskin og lagring}
 
-Løsningen kjøres på én virtuell maskin med Ubuntu Server 24.04 som
-operativsystem. Instansen er konfigurert med 6 virtuelle CPU-kjerner og
-8~GB RAM. I tillegg er det tilknyttet et separat SSD-basert blokkvolum
-på 256~GB for vedvarende lagring av databasedata og modeller. Valget om å benytte én enkelt virtuell maskin fremfor en distribuert arkitektur er gjort med hensyn til prosjektets omfang og kompleksitet. For en prototype uten krav til høy tilgjengelighet eller horisontal skalering er en en-nodes arkitektur tilstrekkelig og reduserer driftsmessig kompleksitet.
-
-VM-en fungerer som applikasjonsserver og kjører både webserver,
-backend-applikasjon og database (i containere). Det er ikke benyttet
-flere instanser, loadbalancing eller høytilgjengelighetsmekanismer.
-Oppsettet representerer dermed en én-nodes arkitektur tilpasset
-utvikling og demonstrasjon. En slik arkitektur et et bevisst kompromiss mellom enkelhet og skalerbarhet, og er valgt i tråd med applikasjonens formål som prototype.
+Løsningen kjøres på én virtuell maskin med Ubuntu Server 24.04, konfigurert med
+6 virtuelle CPU-kjerner, 8~GB RAM og et separat SSD-basert blokkvolum på 256~GB
+for vedvarende lagring av databasedata og modeller. VM-en fungerer som
+applikasjonsserver og kjører webserver, backend-applikasjon og database i containere.
+Det er ikke benyttet lastbalansering eller høytilgjengelighetsmekanismer -- en bevisst
+avveiing mellom enkelhet og skalerbarhet, i tråd med prototypens formål.
 
 Tilgang til maskinen skjer via SSH med nøkkelbasert autentisering.
 Passordinnlogging er deaktivert, og kun forhåndsautoriserte offentlige
@@ -319,4 +345,3 @@ Alle tre arbeidsflytene kjøres på en selvhostet GitHub Actions-runner
 utrulling skjer uten å sende kode over nettverket -- runneren har allerede tilgang
 til det lokale filsystemet og Docker-miljøet på maskinen.
 
-\subsubsection{Github runner hostet på VM}
