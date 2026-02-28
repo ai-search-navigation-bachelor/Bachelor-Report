@@ -59,7 +59,7 @@ sideopplasting. Data fra backend-APIet hentes og caches med TanStack~Query, som
 automatisk håndterer bakgrunnsoppdatering og skiller tydelig mellom server-state og
 UI-logikk. Global klient-state som søke-ID og siste spørring persisteres på tvers av
 ruter med Zustand. HTML-innhold fra HAPI saniteres av DOMPurify før rendering for
-å hindre XSS.
+å hindre XSS (cross-site scripting).
 
 \subsection{Backend}
 
@@ -88,18 +88,26 @@ resten av systemet.
 \subsection{Infrastruktur}
 
 Prototypen er distribuert på en virtuell maskin i NTNUs OpenStack-baserte
-skytjeneste (SkyHigh). Løsningen er tilgjengelig over internett via domenet:
+skytjeneste (SkyHigh), og er tilgjengelig via domenet:
 
 \texttt{https://vm.idatg2901-v26-helsdir.iaas.iik.ntnu.no/}
 
 Infrastrukturen er organisert i tre hovedlag: skyinfrastruktur i OpenStack,
 kjøremiljø på virtuell maskin med containeriserte tjenester, samt et
 applikasjons- og nettverkslag der Nginx fungerer som inngangspunkt for
-ekstern trafikk. Formålet med denne arkitekturen er å muliggjøre stabil og
-isolert drift av frontend, backend og database, samtidig som løsningen
-er tilgjengelig over internett på en kontrollert og sikker måte.
+ekstern trafikk. Formålet er å muliggjøre stabil og isolert drift av
+frontend, backend og database på en kontrollert og sikker måte.
 
-Dette kapittelet beskriver den underliggende infrastrukturen, inkludert nettverkstopologi, konfigurasjon av den virtuelle maskinen, containerisering av backend og database, samt bruken av Nginx som reverse proxy.
+Figur~\ref{fig:vm-internal} gir en samlet oversikt over den interne
+strukturen på VM-en, inkludert alle komponentene og kommunikasjonsflyten
+mellom dem.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.0\textwidth]{Images/Figures/VM-internal}
+    \caption{Intern struktur på VM-en med Nginx, Docker-containere og CI/CD-komponenter.}
+    \label{fig:vm-internal}
+\end{figure}
 
 \subsubsection{Nettverk og tilgjengelighet}
 
@@ -202,7 +210,7 @@ TLS-terminering, trafikkruting og tilgangskontroll.
 En slik arkitektur reduserer direkte eksponering av backend-tjenester
 mot internett og er et etablert mønster i moderne webapplikasjoner~\cite{cloudflare-reverse-proxy}.
 
-HTTPS termineres i Nginx ved bruk av TLS-sertifikater
+HTTPS termineres i Nginx ved bruk av TLS (Transport Layer Security)-sertifikater
 utstedt av Let's Encrypt. All HTTP-trafikk omdirigeres automatisk til HTTPS. TLS-terminering i reverse proxyen innebærer at kryptert trafikk
 dekrypteres før den videresendes internt i systemet. Dette forenkler
 sertifikathåndtering og reduserer kompleksitet i applikasjonslaget.
@@ -215,20 +223,8 @@ Kommunikasjonen mellom Nginx og backend foregår internt på VM-en via HTTP.
 
 Denne arkitekturen gjør at frontend og backend fremstår som én samlet
 tjeneste for klienten, samtidig som backend isoleres bak reverse proxyen.
-Løsningen unngår dermed CORS-relaterte problemstillinger og sentraliserer
-håndtering av TLS og sikkerhetsinnstillinger. 
-
-Som vist i figur~\ref{fig:vm-internal} håndteres all ekstern trafikk
-først av Nginx før den enten serveres som statiske filer eller
-videresendes til backend-containeren, som igjen kommuniserer med
-databasen via et internt Docker-nettverk.
-
-\begin{figure}[H]
-    \centering
-    \includesvg[width=1.0\textwidth]{Images/Figures/VM-internal}
-    \caption{Intern struktur på VM-en med Nginx, Docker-containere og CI/CD-komponenter.}
-    \label{fig:vm-internal}
-\end{figure}
+Løsningen unngår dermed CORS-problemer (Cross-Origin Resource Sharing) og sentraliserer
+håndtering av TLS og sikkerhetsinnstillinger.
 
 \subsubsection{GitHub-integrasjon og CI/CD}
 
@@ -238,10 +234,13 @@ Runneren kjører direkte på VM-en og har tilgang til Docker-miljøet,
 slik at oppdatering av containere kan automatiseres.
 
 Dette gir en enkel CI/CD-prosess der kodeendringer kan deployeres uten
-manuell SSH-innlogging. Detaljer om workflow-konfigurasjon og
-deploy-strategi beskrives i et senere kapittel.
+manuell SSH-innlogging.
 
-Infrastrukturarkitekturen legger til rette for isolert, reproduserbar og sikker drift av prototypen, samtidig som den opprettholder tilstrekkelig enkelhet for utvikling og testing. Løsningen er ikke designet for høy tilgjengelighet eller horisontal skalering, men representerer et hensiktsmessig kompromiss for prosjektets omfang og målsetting.
+Infrastrukturoppsettet legger til rette for isolert, reproduserbar og sikker
+drift av prototypen, og opprettholder tilstrekkelig enkelhet for utvikling og
+testing. Det er ikke designet for høy tilgjengelighet eller horisontal
+skalering, men representerer et hensiktsmessig kompromiss for prosjektets
+omfang og formål.
 
 \subsection{CI/CD med GitHub Actions}
 %Få også inn secrets, ssh mellom runner og github
