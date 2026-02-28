@@ -2,15 +2,6 @@
 
 
 
-\begin{figure}[H]
-    \centering
-    \includesvg[width=1.2\textwidth]{Images/frontendTech}
-    \caption{ Oversikt over frontend-arkitekturen med teknologier fordelt i lag.}
-    \label{fig:frontend-tech-stack}
-\end{figure}
-
-
-
 Dette kapittelet beskriver det tekniske oppsettet av prototypen -- hvilke teknologier
 som er valgt, hvordan infrastrukturen er organisert, og hvordan endringer rulles ut
 automatisk. Selve søke- og navigasjonsløsningene som er bygget oppå denne arkitekturen
@@ -49,14 +40,36 @@ og temautdrag. I prototypen brukes HAPI på to måter:
         API-nøkkelen ikke eksponeres i nettleseren.
 \end{itemize}
 
+\subsection{Frontend?}
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=1.2\textwidth]{Images/frontendTech}
+    \caption{ Oversikt over frontend-arkitekturen med teknologier fordelt i lag.}
+    \label{fig:frontend-tech-stack}
+\end{figure}
+
+\subsection{Backend?}
+
+%Figur og forklaernede tekst om backend teknologi / implementasjon...
+
+
+
 \subsection{Infrastruktur}
 
 Prototypen er distribuert på en virtuell maskin i NTNUs OpenStack-baserte
-skytjeneste (SkyHigh). Løsningen er tilgjengelig over internett via domenet
-\texttt{https://vm.idatg2901-v26-helsdir.iaas.iik.ntnu.no/}. Dette kapittelet
-beskriver den underliggende infrastrukturen, inkludert nettverkstopologi,
-konfigurasjon av den virtuelle maskinen, containerisering av backend og
-database, samt bruken av Nginx som reverse proxy.
+skytjeneste (SkyHigh). Løsningen er tilgjengelig over internett via domenet:
+
+\texttt{https://vm.idatg2901-v26-helsdir.iaas.iik.ntnu.no/}
+
+Infrastrukturen er organisert i tre hovedlag: skyinfrastruktur i OpenStack,
+kjøremiljø på virtuell maskin med containeriserte tjenester, samt et
+applikasjons- og nettverkslag der Nginx fungerer som inngangspunkt for
+ekstern trafikk. Formålet med denne arkitekturen er å muliggjøre stabil og
+isolert drift av frontend, backend og database, samtidig som løsningen
+er tilgjengelig over internett på en kontrollert og sikker måte.
+
+Dette kapittelet beskriver den underliggende infrastrukturen, inkludert nettverkstopologi, konfigurasjon av den virtuelle maskinen, containerisering av backend og database, samt bruken av Nginx som reverse proxy.
 
 \subsubsection{Nettverk og tilgjengelighet}
 
@@ -69,7 +82,7 @@ tilgjengelig fra internett.
 
 \begin{figure}[H]
     \centering
-    \includesvg[width=1.0\textwidth]{Images/Figures/network-infrastructure}
+    \includesvg[width=1.0\textwidth]{Images/Figures/network-infrastructure(2)}
     \caption{Trafikkflyt fra URL til virtuell maskin i OpenStack, inkludert
     DNS-oppløsning, flytende IP-adresse og ruting gjennom privat subnett.}
     \label{fig:infra-setup}
@@ -107,7 +120,7 @@ VM-en fungerer som applikasjonsserver og kjører både webserver,
 backend-applikasjon og database (i containere). Det er ikke benyttet
 flere instanser, loadbalancing eller høytilgjengelighetsmekanismer.
 Oppsettet representerer dermed en én-nodes arkitektur tilpasset
-utvikling og demonstrasjon.
+utvikling og demonstrasjon. En slik arkitektur et et bevisst kompromiss mellom enkelhet og skalerbarhet, og er valgt i tråd med applikasjonens formål som prototype.
 
 Tilgang til maskinen skjer via SSH med nøkkelbasert autentisering.
 Passordinnlogging er deaktivert, og kun forhåndsautoriserte offentlige
@@ -123,6 +136,8 @@ tradisjonelle virtuelle maskiner~\cite{pahl2015containers}.
 
 Backend-applikasjonen og databasen kjøres derfor i separate
 Docker-containere administrert med Docker Compose.
+
+Sensitive konfigurasjonsverdier som databasepassord og tilkoblingsinformasjon håndteres gjennom miljøvariabler definert i en lokal \texttt{\detokenize{.env}}-fil. I Docker Compose refereres disse variablene eksplisitt via \texttt{\detokenize{env_file}} og \texttt{environment}, slik at hemmeligheter holdes adskilt fra kildekoden og ikke hardkodes i applikasjonen.
 
 \subsubsection{Tjenestestruktur og oppstart}
 
@@ -200,7 +215,10 @@ Dette gir en enkel CI/CD-prosess der kodeendringer kan deployeres uten
 manuell SSH-innlogging. Detaljer om workflow-konfigurasjon og
 deploy-strategi beskrives i et senere kapittel.
 
+Infrastrukturarkitekturen legger til rette for isolert, reproduserbar og sikker drift av prototypen, samtidig som den opprettholder tilstrekkelig enkelhet for utvikling og testing. Løsningen er ikke designet for høy tilgjengelighet eller horisontal skalering, men representerer et hensiktsmessig kompromiss for prosjektets omfang og målsetting.
+
 \subsection{CI/CD med GitHub Actions}
+%Få også inn secrets, ssh mellom runner og github
 
 GitHub Actions~\cite{github-actions-docs} er brukt for å automatisere
 kvalitetskontroll og utrulling (CI/CD -- Continuous Integration/Continuous Deployment).
