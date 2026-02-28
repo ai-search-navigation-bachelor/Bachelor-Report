@@ -76,7 +76,7 @@ automatisk API-dokumentasjon (OpenAPI/Swagger), noe som forenkler integrasjon og
 
 Innkommende forespørsler koordineres i et controller-lag som delegerer til riktige services.
 Service-laget inneholder forretningslogikken -- blant annet orkestrering av hybrid søk og
-proxy-kall mot HAPI. Et eget repository-lag abstrahere all databasetilgang mot MySQL, slik
+proxy-kall mot HAPI. Et eget repository-lag abstraherer all databasetilgang mot MySQL, slik
 at SQL-logikken holdes adskilt fra resten av koden.
 
 Denne arkitekturen ble valgt fordi den gir god testbarhet og gjør det enkelt å bytte ut
